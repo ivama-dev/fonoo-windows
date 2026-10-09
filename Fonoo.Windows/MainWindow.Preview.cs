@@ -37,6 +37,15 @@ public sealed partial class MainWindow
         // Synthetic data confined to an explicitly built Debug preview. No real
         // account, provisioner, SIP worker or tray is created by these fixtures.
         accountId = "preview-user"; activeTenant = "preview-company";
+        availability = new AvailabilitySnapshot { SchemaVersion = 1, TenantId = activeTenant, UserId = accountId, SelfUserId = accountId, Revision = 1,
+            ProfilesAvailable = true, DeviceProfilesVersion = 1,
+            PersonalDevices = [new() { Id = "preview-pc", Name = "Windows-PC", UserId = accountId, Enabled = true },
+                new() { Id = "preview-iphone", Name = "iPhone", UserId = accountId, Enabled = true },
+                new() { Id = "preview-mac", Name = "MacBook", UserId = accountId, Enabled = false }],
+            Settings = new() { DeviceProfiles = [DeviceProfile.Standard(), new() { Id = "preview-office", Name = "Büro", DeviceIds = ["preview-pc", "preview-mac"] },
+                new() { Id = "preview-mobile", Name = "Unterwegs", DeviceIds = ["preview-iphone"] }], ActiveProfileId = "standard" }
+        }.Validate(activeTenant, accountId);
+        RenderProfileButton();
         PreviewCallButton.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
         PreviewMiniButton.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
         favoritesStore = new FavoritesStore(Path.Combine(AppContext.BaseDirectory, "qa", "favorites"), accountId, activeTenant);

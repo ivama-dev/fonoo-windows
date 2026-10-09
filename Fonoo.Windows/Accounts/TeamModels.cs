@@ -25,6 +25,7 @@ public sealed class PersonalDevice
     public string Name { get; set; } = "";
     public string? UserId { get; set; }
     public string? TechnicalStatus { get; set; }
+    public bool? Enabled { get; set; }
 }
 public sealed class PersonalAvailability
 {
@@ -55,7 +56,7 @@ public sealed class TeamSnapshot
         return this;
     }
 }
-public sealed class AvailabilitySnapshot
+public sealed partial class AvailabilitySnapshot
 {
     public int SchemaVersion { get; set; }
     public string TenantId { get; set; } = "";
@@ -76,10 +77,11 @@ public sealed class AvailabilitySnapshot
             CallTeams.Any(t => t is null || string.IsNullOrEmpty(t.Id) || t.Members is null || t.Members.Any(m => m is null || m.Revision < 0)) ||
             PersonalDevices.Any(d => d is null || string.IsNullOrEmpty(d.Id) || string.IsNullOrEmpty(d.Name)) || Schedules.Any(s => s is null || string.IsNullOrEmpty(s.Id)))
             throw new AccountException("Die Verfügbarkeit konnte nicht sicher geladen werden.");
+        ValidateProfiles();
         return this;
     }
 }
-public sealed class AvailabilitySettings
+public sealed partial class AvailabilitySettings
 {
     public PersonalAvailability? Presence { get; set; }
     public string WorkMode { get; set; } = "office";

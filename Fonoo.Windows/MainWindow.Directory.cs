@@ -37,14 +37,14 @@ public sealed partial class MainWindow
         availabilityTimer = DispatcherQueue.CreateTimer(); availabilityTimer.Interval = TimeSpan.FromSeconds(15);
         availabilityTimer.Tick += async (_, _) =>
         {
-            if (availabilityPolling || modalOpen || operation is not null || closed || closingWithEngine || activeTenant.Length == 0 || !account.SignedIn) return;
+            if (availabilityPolling || profileBusy || modalOpen || operation is not null || closed || closingWithEngine || activeTenant.Length == 0 || !account.SignedIn) return;
             availabilityPolling = true;
-            var tenant = activeTenant; var user = accountId;
+            var tenant = activeTenant; var user = accountId; var lifetime = historyLifetime;
             try
             {
-                var next = await account.GetAvailabilityAsync(tenant, user, CancellationToken.None);
-                if (closed || tenant != activeTenant || user != accountId) return;
-                availability = next; await ApplyAvailabilityAsync(next);
+                var next = await account.GetAvailabilityAsync(tenant, user, lifetime?.Token ?? CancellationToken.None);
+                if (closed || tenant != activeTenant || user != accountId || !ReferenceEquals(lifetime, historyLifetime)) return;
+                await ApplyAvailabilityAsync(next);
             }
             catch (AccountException ex) when (ex.SessionExpired) { if (!closed && tenant == activeTenant && user == accountId) ResetSession(); }
             catch { /* Keep the last confirmed local preference through a network interruption. */ }
@@ -54,6 +54,7 @@ public sealed partial class MainWindow
     private void LoadHistory(string tenant)
     {
         activeTenant = tenant; history.Clear(); historyStore = null; teamSnapshot = null; availability = null;
+        profileMenu?.Hide(); RenderProfileButton();
         _ = RestoreMicrosoftContactsAsync(accountId);
         TeamList.ItemsSource = null; TeamDetailPanel.Visibility = Visibility.Collapsed; TeamCompany.Text = CompanyName.Text;
         TeamMessage.Text = "Lade dein Firmenverzeichnis.";
@@ -239,12 +240,16 @@ public sealed partial class MainWindow
         {
             var next = await account.GetAvailabilityAsync(tenant, user, ct); ct.ThrowIfCancellationRequested();
             if (tenant != activeTenant || user != accountId) return;
-            availability = next; await ApplyAvailabilityAsync(next);
+            await ApplyAvailabilityAsync(next);
         }
         catch (AccountException ex) when (!ex.SessionExpired) { ShowNotice("Das Team ist geladen; die Verfügbarkeit konnte noch nicht aktualisiert werden.", InfoBarSeverity.Informational); }
     }
     private async Task ApplyAvailabilityAsync(AvailabilitySnapshot next)
     {
+        if (next.TenantId != activeTenant || next.UserId != accountId || next.SelfUserId != accountId ||
+            availability is { } previous && previous.Revision > next.Revision) return;
+        availability = next;
+        RenderProfileButton();
         if (next.TenantId == activeTenant && next.UserId == accountId && engine is { } current)
         {
             var dnd = manualDoNotDisturb || (next.Company.RoutingEnabled && next.Effective.Presence?.State == "do_not_disturb");

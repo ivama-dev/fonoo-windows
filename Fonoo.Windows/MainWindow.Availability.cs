@@ -17,7 +17,7 @@ public sealed partial class MainWindow
             var form = new StackPanel { Spacing = 16 };
             var reason = new TextBlock { Text = current.Effective.ReasonText + (current.Effective.NextAvailableAt is { } next ? "\nWieder verfügbar: " + next : ""), TextWrapping = TextWrapping.Wrap };
             form.Children.Add(reason);
-            if (!current.Company.RoutingEnabled) form.Children.Add(new TextBlock { Text = "Deine Einstellungen sind vorbereitet. Ein Administrator muss die neue Anrufsteuerung für die Firma aktivieren.", TextWrapping = TextWrapping.Wrap });
+            if (!current.Company.RoutingEnabled) form.Children.Add(new TextBlock { Text = "Status, Arbeitszeiten und Rufteams benötigen die Freigabe deiner Administration. Deine Anrufprofile funktionieren unabhängig davon.", TextWrapping = TextWrapping.Wrap });
             var statusOptions = PersonalAvailability.States.ToArray();
             var status = new ComboBox { Header = "Verfügbarkeit", ItemsSource = statusOptions.Select(p => p.Value).ToArray(), HorizontalAlignment = HorizontalAlignment.Stretch };
             status.SelectedIndex = Math.Max(0, Array.FindIndex(statusOptions, p => p.Key == (current.Settings.Presence?.State ?? "available")));
@@ -28,23 +28,8 @@ public sealed partial class MainWindow
             automatic.Checked += (_, _) => status.IsEnabled = description.IsEnabled = expiry.IsEnabled = false;
             automatic.Unchecked += (_, _) => status.IsEnabled = description.IsEnabled = expiry.IsEnabled = true;
             status.IsEnabled = description.IsEnabled = expiry.IsEnabled = automatic.IsChecked != true;
-            var modes = PersonalAvailability.Modes.ToArray();
-            var mode = new ComboBox { Header = "Arbeitsmodus", ItemsSource = modes.Select(p => p.Value).ToArray(), HorizontalAlignment = HorizontalAlignment.Stretch };
-            mode.SelectedIndex = Math.Max(0, Array.FindIndex(modes, p => p.Key == current.Settings.WorkMode)); form.Children.Add(mode);
             if (current.Effective.EffectiveDevices is { Length: > 0 } effective)
                 form.Children.Add(new TextBlock { Text = "Anrufe klingeln auf: " + string.Join(", ", effective.Select(d => d.Name)), TextWrapping = TextWrapping.Wrap });
-            var profileChecks = new Dictionary<string, List<(string Id, CheckBox Box)>>();
-            foreach (var profile in modes)
-            {
-                var deviceForm = new StackPanel { Spacing = 10 }; var checks = new List<(string, CheckBox)>();
-                foreach (var device in current.PersonalDevices.Where(d => d.UserId == current.UserId))
-                {
-                    var check = new CheckBox { Content = device.Name, IsChecked = !current.Settings.ModeDevices.TryGetValue(profile.Key, out var selected) || selected.Contains(device.Id) };
-                    checks.Add((device.Id, check)); deviceForm.Children.Add(check);
-                }
-                profileChecks[profile.Key] = checks;
-                if (checks.Count > 0) form.Children.Add(new Expander { Header = "Geräte · " + profile.Value, Content = deviceForm, HorizontalAlignment = HorizontalAlignment.Stretch, HorizontalContentAlignment = HorizontalAlignment.Stretch });
-            }
             var schedule = current.Schedules.FirstOrDefault(s => s.Id == current.Settings.ScheduleId);
             form.Children.Add(new TextBlock { Text = "Arbeitszeit: " + (schedule?.Name ?? "Kein persönlicher Zeitplan hinterlegt"), TextWrapping = TextWrapping.Wrap });
             var feedback = new TextBlock { TextWrapping = TextWrapping.Wrap }; form.Children.Add(feedback);
@@ -81,7 +66,7 @@ public sealed partial class MainWindow
                 form.Children.Add(group);
             }
             form.Children.Add(new HyperlinkButton { Content = "Zeitpläne, Rufteams und Geräte verwalten", NavigateUri = new Uri("https://dev.fonoo.app/kunden/?tenant_id=" + Uri.EscapeDataString(activeTenant) + "&section=availability") });
-            var dialog = NewDialog("Meine Verfügbarkeit & Rufteams", new ScrollViewer { Content = form, MaxHeight = 480, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled });
+            var dialog = NewDialog("Status, Arbeitszeiten & Rufteams", new ScrollViewer { Content = form, MaxHeight = 480, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled });
             dialog.PrimaryButtonClick += async (_, args) =>
             {
                 if (busy) { args.Cancel = true; return; }
@@ -92,10 +77,8 @@ public sealed partial class MainWindow
                     long? until = seconds == 0 ? null : DateTimeOffset.UtcNow.AddSeconds(seconds).ToUnixTimeSeconds();
                     var state = statusOptions[status.SelectedIndex].Key;
                     object? presence = automatic.IsChecked == true ? null : new { state, description = description.Text.Trim(), valid_until = until };
-                    var profiles = new Dictionary<string, string[]>(current.Settings.ModeDevices);
-                    foreach (var pair in profileChecks.Where(p => p.Value.Count > 0)) profiles[pair.Key] = pair.Value.Where(p => p.Box.IsChecked == true).Select(p => p.Id).ToArray();
-                    await account.SaveAvailabilityAsync(current, new { presence, override_schedule_until = automatic.IsChecked != true && state == "available" ? until : null, work_mode = modes[mode.SelectedIndex].Key, mode_devices = profiles }, CancellationToken.None);
-                    availability = await account.GetAvailabilityAsync(activeTenant, accountId, CancellationToken.None); await ApplyAvailabilityAsync(availability);
+                    await account.SaveAvailabilityAsync(current, new { presence, override_schedule_until = automatic.IsChecked != true && state == "available" ? until : null }, CancellationToken.None);
+                    await ApplyAvailabilityAsync(await account.GetAvailabilityAsync(activeTenant, accountId, CancellationToken.None));
                 }
                 catch (AccountException ex) { args.Cancel = true; feedback.Text = ex.Message; }
                 catch { args.Cancel = true; feedback.Text = "Die Einstellungen konnten nicht gespeichert werden. Bitte erneut laden."; }

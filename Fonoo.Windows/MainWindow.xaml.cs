@@ -113,6 +113,7 @@ public sealed partial class MainWindow : Window
             {
                 RenderDestination();
                 operation = null;
+                RenderProfileButton();
                 UpdateTeamActions();
                 Actions.IsEnabled = true;
                 Progress.IsActive = false;
@@ -227,7 +228,7 @@ public sealed partial class MainWindow : Window
         PhonePanel.Visibility = Visibility.Visible;
         LoadFavorites(membership.Id);
         LoadHistory(membership.Id);
-        try { availability = await account.GetAvailabilityAsync(activeTenant, accountId, ct); }
+        try { await ApplyAvailabilityAsync(await account.GetAvailabilityAsync(activeTenant, accountId, ct)); }
         catch (AccountException ex) when (!ex.SessionExpired) { /* Older services can provision SIP before directory APIs are deployed. */ }
         catch (HttpRequestException) { /* SIP setup can proceed while presence is temporarily unreachable. */ }
         ct.ThrowIfCancellationRequested();
@@ -280,6 +281,7 @@ public sealed partial class MainWindow : Window
         history.Clear(); historyStore = null; contacts = []; teamSnapshot = null; availability = null;
         windowsContactIds.Clear();
         activeTenant = ""; choosingCompany = false; refreshAccountAfterCall = false; RenderHistory(); RenderContacts();
+        profileMenu?.Hide(); RenderProfileButton();
         manualDoNotDisturb = false;
         TeamList.ItemsSource = null; TeamDetailPanel.Visibility = Visibility.Collapsed;
         accountId = "";

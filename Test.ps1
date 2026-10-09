@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param([switch]$SkipDpapi, [switch]$NoRestore)
 $ErrorActionPreference = 'Stop'
-$suites = @('AccountFlow.Tests','PhoneData.Tests','HistorySync.Tests','Presence.Tests','DesktopData.Tests','MicrosoftContacts.Tests','AudioData.Tests')
+$suites = @('AccountFlow.Tests','DeviceProfiles.Tests','PhoneData.Tests','HistorySync.Tests','Presence.Tests','DesktopData.Tests','MicrosoftContacts.Tests','AudioData.Tests')
 foreach ($suite in $suites) {
     $arguments = @('run','--project',(Join-Path $PSScriptRoot "tests\$suite"))
     if ($NoRestore) { $arguments += '--no-restore' }

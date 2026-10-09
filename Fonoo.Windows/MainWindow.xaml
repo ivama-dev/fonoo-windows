@@ -52,11 +52,16 @@
    <Grid RowSpacing="0">
     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
     <Border BorderBrush="{ThemeResource FonooLine}" BorderThickness="0,0,0,1" Padding="28,16">
-     <Grid><Grid.RowDefinitions><RowDefinition/><RowDefinition Height="Auto"/></Grid.RowDefinitions><TextBlock x:Name="PageTitle" Text="Anmelden" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
-      <Button Content="Audio" HorizontalAlignment="Right" Click="AudioClicked" ToolTipService.ToolTip="Audioeinstellungen"/>
-      <Button x:Name="PreviewCallButton" Content="Gesprächsvorschau" HorizontalAlignment="Right" Margin="0,0,136,0" Click="PreviewCallClicked" Visibility="Collapsed"/>
-      <Button x:Name="PreviewMiniButton" Content="Mini" HorizontalAlignment="Right" Margin="0,0,72,0" Click="PreviewMiniClicked" Visibility="Collapsed"/>
-      <Button x:Name="CallReturnButton" Grid.Row="1" Content="Zurück zum Gespräch" Click="ReturnToCallClicked" Visibility="Collapsed" Margin="0,12,0,0" Style="{ThemeResource AccentButtonStyle}" HorizontalAlignment="Stretch"/>
+     <Grid ColumnSpacing="16"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><Grid.RowDefinitions><RowDefinition/><RowDefinition Height="Auto"/></Grid.RowDefinitions><TextBlock x:Name="PageTitle" Text="Anmelden" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+       <Button x:Name="PreviewCallButton" Content="Gesprächsvorschau" Click="PreviewCallClicked" Visibility="Collapsed"/>
+       <Button x:Name="PreviewMiniButton" Content="Mini" Click="PreviewMiniClicked" Visibility="Collapsed"/>
+       <Button x:Name="ProfileButton" Click="ProfilesClicked" Visibility="Collapsed" MaxWidth="180" ToolTipService.ToolTip="Geräte für eingehende Anrufe auswählen" AutomationProperties.Name="Anrufprofile">
+        <StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE8F1;" FontSize="16"/><TextBlock x:Name="ProfileName" Text="Anrufprofile" MaxWidth="115" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/></StackPanel>
+       </Button>
+       <Button Content="Audio" Click="AudioClicked" ToolTipService.ToolTip="Audioeinstellungen"/>
+      </StackPanel>
+      <Button x:Name="CallReturnButton" Grid.Row="1" Grid.ColumnSpan="2" Content="Zurück zum Gespräch" Click="ReturnToCallClicked" Visibility="Collapsed" Margin="0,12,0,0" Style="{ThemeResource AccentButtonStyle}" HorizontalAlignment="Stretch"/>
      </Grid>
     </Border>
     <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
@@ -194,7 +199,7 @@
         <StackPanel x:Name="TeamPanel" Visibility="Collapsed" Spacing="18">
          <TextBlock x:Name="TeamCompany" Text="Dein Team" FontSize="26" FontWeight="SemiBold"/>
          <TextBlock Text="Internes Firmenadressbuch" Foreground="{ThemeResource FonooMuted}"/>
-         <StackPanel Orientation="Horizontal" Spacing="8"><Button Content="Aktualisieren" Click="RefreshTeamClicked"/><Button Content="Meine Verfügbarkeit &amp; Rufteams" Click="AvailabilityClicked"/></StackPanel>
+         <StackPanel Orientation="Horizontal" Spacing="8"><Button Content="Aktualisieren" Click="RefreshTeamClicked"/><Button Content="Anrufprofile &amp; Rufteams" Click="ManageProfilesClicked"/></StackPanel>
          <Button x:Name="PreviewPresenceButton" Content="Statusbeispiele anzeigen" Click="PreviewPresenceClicked" Visibility="Collapsed" HorizontalAlignment="Left"/>
          <TextBox x:Name="TeamSearch" PlaceholderText="Name, E-Mail oder Nebenstelle suchen" TextChanged="TeamSearchChanged" AutomationProperties.Name="Team durchsuchen"/>
          <TextBlock x:Name="TeamMessage" Text="Lade dein Firmenverzeichnis." TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}"/>
