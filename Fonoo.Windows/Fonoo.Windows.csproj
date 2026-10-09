@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+    <RootNamespace>Fonoo.Windows</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\Fonoo.ico</ApplicationIcon>
+    <Platforms>x64;ARM64</Platforms>
+    <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
+    <UseWinUI>true</UseWinUI>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <DefineConstants Condition="'$(FonooDesignPreview)' == 'true' and '$(Configuration)' == 'Debug'">$(DefineConstants);FONOO_DESIGN_PREVIEW</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.5.1" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.8249" />
+    <PackageReference Include="LinphoneSDK.Windows" Version="5.5.24" GeneratePathProperty="true" ExcludeAssets="all" />
+    <PackageReference Include="Microsoft.Identity.Client.Broker" Version="4.90.1" />
+    <PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" Version="4.90.1" />
+    <Manifest Include="$(ApplicationManifest)" />
+    <Content Include="Assets\*.png" />
+    <Content Include="Assets\Fonoo.ico" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="Assets\AudioTest.wav" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="microsoft365.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="..\LICENSE" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Link="Licenses\Fonoo-AGPL-3.0.txt" />
+    <Content Include="..\NOTICE.md" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Link="Licenses\NOTICE.md" />
+    <ProjectCapability Include="Msix" />
+  </ItemGroup>
+  <Target Name="ValidateSipArchitecture" BeforeTargets="ResolveReferences">
+    <Error Condition="'$(Platform)' != 'x64'" Text="The selected Linphone SDK has only been integrated for x64." />
+  </Target>
+  <ItemGroup>
+    <Reference Include="CsWrapper"><HintPath>$(PkgLinphoneSDK_Windows)/lib/netcore/x64/CsWrapper.dll</HintPath></Reference>
+    <Content Include="$(PkgLinphoneSDK_Windows)/lib/netcore/x64/*.dll" Exclude="$(PkgLinphoneSDK_Windows)/lib/netcore/x64/*tester*.dll"
+             CopyToOutputDirectory="PreserveNewest" Link="%(Filename)%(Extension)" />
+    <Content Include="$(PkgLinphoneSDK_Windows)/lib/netcore/x64/mediastreamer/plugins/libmswasapi.dll;$(PkgLinphoneSDK_Windows)/lib/netcore/x64/mediastreamer/plugins/libmswebrtc.dll"
+             CopyToOutputDirectory="PreserveNewest" Link="mediastreamer/plugins/%(Filename)%(Extension)" />
+    <Content Include="$(PkgLinphoneSDK_Windows)/content/belr/**/*" CopyToOutputDirectory="PreserveNewest" Link="share/belr/%(RecursiveDir)%(Filename)%(Extension)" />
+    <Content Include="$(PkgLinphoneSDK_Windows)/content/linphone/rootca.pem" CopyToOutputDirectory="PreserveNewest" Link="share/linphone/rootca.pem" />
+    <Content Include="$(PkgLinphoneSDK_Windows)/content/sounds/**/*" CopyToOutputDirectory="PreserveNewest" Link="share/sounds/%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

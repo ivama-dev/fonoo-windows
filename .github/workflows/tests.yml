@@ -1,0 +1,23 @@
+name: Source and unit checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: 10.0.401
+      - name: Check published source
+        shell: pwsh
+        run: ./Verify-Source.ps1
+      - name: Run unit checks
+        shell: pwsh
+        run: ./Test.ps1

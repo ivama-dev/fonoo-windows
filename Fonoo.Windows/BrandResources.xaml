@@ -1,0 +1,68 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Desktop accent matches MacStyle.accent (0.43, 0.29, 0.85). -->
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="#6E4AD9" />
+            <SolidColorBrush x:Key="SelectorBarItemPillFill" Color="#6E4AD9" />
+            <SolidColorBrush x:Key="FonooKeyFace" Color="#ECEAF0" />
+            <SolidColorBrush x:Key="FonooCallGreen" Color="#209B53" />
+            <SolidColorBrush x:Key="FonooCallInk" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="AccentButtonBackground" Color="#6E4AD9" />
+            <SolidColorBrush x:Key="AccentButtonBackgroundPointerOver" Color="#5827B0" />
+            <SolidColorBrush x:Key="AccentButtonBackgroundPressed" Color="#492094" />
+            <SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="#6E4AD9" />
+            <SolidColorBrush x:Key="FonooBackground" Color="#FAF9FC" />
+            <SolidColorBrush x:Key="FonooSurface" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="FonooInk" Color="#222032" />
+            <SolidColorBrush x:Key="FonooMuted" Color="#716E80" />
+            <SolidColorBrush x:Key="FonooPurple" Color="#6E4AD9" />
+            <SolidColorBrush x:Key="FonooLine" Color="#E8E4EE" />
+            <SolidColorBrush x:Key="FonooAudioWarm" Color="#A76612" />
+            <SolidColorBrush x:Key="FonooAudioHigh" Color="#C42B1C" />
+            <SolidColorBrush x:Key="FonooCallDanger" Color="#C42B1C" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Default">
+            <SolidColorBrush x:Key="SelectorBarItemPillFill" Color="#B99AFA" />
+            <SolidColorBrush x:Key="FonooKeyFace" Color="#383440" />
+            <SolidColorBrush x:Key="FonooCallGreen" Color="#209B53" />
+            <SolidColorBrush x:Key="FonooCallInk" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="FonooBackground" Color="#1B1823" />
+            <SolidColorBrush x:Key="FonooSurface" Color="#25212F" />
+            <SolidColorBrush x:Key="FonooInk" Color="#FAF9FC" />
+            <SolidColorBrush x:Key="FonooMuted" Color="#BCB5C9" />
+            <SolidColorBrush x:Key="FonooPurple" Color="#B99AFA" />
+            <SolidColorBrush x:Key="FonooLine" Color="#40374E" />
+            <SolidColorBrush x:Key="FonooAudioWarm" Color="#F5BC63" />
+            <SolidColorBrush x:Key="FonooAudioHigh" Color="#FF9A90" />
+            <SolidColorBrush x:Key="FonooCallDanger" Color="#C42B1C" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+            <SolidColorBrush x:Key="SelectorBarItemPillFill" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="FonooKeyFace" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="FonooCallGreen" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="FonooCallInk" Color="{ThemeResource SystemColorHighlightTextColor}" />
+            <SolidColorBrush x:Key="FonooBackground" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="FonooSurface" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="FonooInk" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <SolidColorBrush x:Key="FonooMuted" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <SolidColorBrush x:Key="FonooPurple" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="FonooLine" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <SolidColorBrush x:Key="FonooAudioWarm" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="FonooAudioHigh" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="FonooCallDanger" Color="{ThemeResource SystemColorHighlightColor}" />
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+    <Style x:Key="FonooDialKeyStyle" TargetType="Button">
+        <Setter Property="Width" Value="NaN" />
+        <Setter Property="Height" Value="46" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="{ThemeResource FonooKeyFace}" />
+        <Setter Property="Foreground" Value="{ThemeResource FonooInk}" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+</ResourceDictionary>

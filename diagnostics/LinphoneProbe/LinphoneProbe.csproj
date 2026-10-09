@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <DefineConstants>$(DefineConstants);FONOO_CALL_DIAGNOSTICS</DefineConstants>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <Target Name="RequireSdk" BeforeTargets="ResolveReferences">
+    <Error Condition="!Exists('$(LinphoneSdkRoot)/lib/netcore/x64/CsWrapper.dll')"
+           Text="Set LinphoneSdkRoot to an extracted LinphoneSDK.Windows 5.5.24 package." />
+  </Target>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="CallChecks.cs" />
+    <Compile Include="../../Fonoo.Windows/Telephony/SipEngine*.cs" Link="%(Filename)%(Extension)" />
+    <Compile Include="../../Fonoo.Windows/Telephony/CallHistoryStore.cs" Link="CallHistoryStore.cs" />
+    <Compile Include="../../Fonoo.Windows/Telephony/DialNumber.cs" Link="DialNumber.cs" />
+    <Compile Include="../../Fonoo.Windows/Accounts/*.cs" Link="Accounts/%(Filename)%(Extension)" />
+    <Reference Include="CsWrapper">
+      <HintPath>$(LinphoneSdkRoot)/lib/netcore/x64/CsWrapper.dll</HintPath>
+    </Reference>
+    <None Include="$(LinphoneSdkRoot)/lib/netcore/x64/*.dll"
+          Exclude="$(LinphoneSdkRoot)/lib/netcore/x64/*tester*.dll"
+          CopyToOutputDirectory="PreserveNewest" Link="%(Filename)%(Extension)" />
+    <None Include="$(LinphoneSdkRoot)/lib/netcore/x64/mediastreamer/plugins/libmswasapi.dll;$(LinphoneSdkRoot)/lib/netcore/x64/mediastreamer/plugins/libmswebrtc.dll"
+          CopyToOutputDirectory="PreserveNewest" Link="mediastreamer/plugins/%(Filename)%(Extension)" />
+    <None Include="$(LinphoneSdkRoot)/content/**/*"
+          Exclude="$(LinphoneSdkRoot)/content/doc/**/*;$(LinphoneSdkRoot)/content/*tester*/**/*;$(LinphoneSdkRoot)/content/BCUnit/**/*;$(LinphoneSdkRoot)/content/mbedtls/**/*;$(LinphoneSdkRoot)/content/linphonecs/**/*"
+          CopyToOutputDirectory="PreserveNewest" Link="share/%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,12 @@
+<UserControl x:Class="Fonoo.Windows.Desktop.AudioLevelBar" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <UserControl.Resources>
+    <Style x:Key="Empty" TargetType="Border"><Setter Property="Background" Value="{ThemeResource FonooLine}"/><Setter Property="BorderBrush" Value="{ThemeResource FonooPurple}"/><Setter Property="BorderThickness" Value="0"/></Style>
+    <Style x:Key="Normal" TargetType="Border" BasedOn="{StaticResource Empty}"><Setter Property="Background" Value="{ThemeResource FonooPurple}"/></Style>
+    <Style x:Key="Warm" TargetType="Border" BasedOn="{StaticResource Empty}"><Setter Property="Background" Value="{ThemeResource FonooAudioWarm}"/></Style>
+    <Style x:Key="High" TargetType="Border" BasedOn="{StaticResource Empty}"><Setter Property="Background" Value="{ThemeResource FonooAudioHigh}"/></Style>
+    <Style x:Key="Peak" TargetType="Border" BasedOn="{StaticResource Empty}"><Setter Property="BorderThickness" Value="2"/></Style>
+    <Style x:Key="WarmPeak" TargetType="Border" BasedOn="{StaticResource Peak}"><Setter Property="BorderBrush" Value="{ThemeResource FonooAudioWarm}"/></Style>
+    <Style x:Key="HighPeak" TargetType="Border" BasedOn="{StaticResource Peak}"><Setter Property="BorderBrush" Value="{ThemeResource FonooAudioHigh}"/></Style>
+  </UserControl.Resources>
+  <Grid x:Name="Segments"/>
+</UserControl>

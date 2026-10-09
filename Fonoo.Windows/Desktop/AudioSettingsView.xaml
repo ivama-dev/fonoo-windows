@@ -1,0 +1,77 @@
+<UserControl
+    x:Class="Fonoo.Windows.Desktop.AudioSettingsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Fonoo.Windows.Desktop">
+  <UserControl.Resources>
+    <Style x:Key="AudioLevelText" TargetType="TextBlock"><Setter Property="Foreground" Value="{ThemeResource FonooInk}"/></Style>
+    <Style x:Key="AudioHighLevelText" TargetType="TextBlock"><Setter Property="Foreground" Value="{ThemeResource FonooAudioHigh}"/></Style>
+  </UserControl.Resources>
+  <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <StackPanel Spacing="14" MinWidth="300" MaxWidth="490" Padding="0,0,8,4">
+      <TextBlock x:Name="Introduction" Text="Wähle deine Geräte und prüfe kurz, ob du gut zu hören bist. Deine Auswahl wird automatisch gespeichert." TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}"/>
+      <InfoBar x:Name="Notice" IsOpen="False" IsClosable="False"/>
+
+      <Border Background="{ThemeResource FonooBackground}" BorderBrush="{ThemeResource FonooLine}" BorderThickness="1" CornerRadius="10" Padding="16">
+        <StackPanel Spacing="10">
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <FontIcon Glyph="&#xE720;" FontSize="18" Foreground="{ThemeResource FonooPurple}"/>
+            <TextBlock Text="Mikrofon" FontSize="16" FontWeight="SemiBold"/>
+          </StackPanel>
+          <ComboBox x:Name="InputSelector" HorizontalAlignment="Stretch" DisplayMemberPath="Name" SelectedValuePath="Id" PlaceholderText="Kein Mikrofon verfügbar" AutomationProperties.Name="Mikrofon auswählen"/>
+          <Grid>
+            <TextBlock Text="Eingangspegel" Foreground="{ThemeResource FonooMuted}" FontSize="12"/>
+            <TextBlock x:Name="LevelStatus" Text="Wird vorbereitet …" HorizontalAlignment="Right" FontSize="12" FontWeight="SemiBold"/>
+          </Grid>
+          <local:AudioLevelBar x:Name="LevelMeter" Height="14" AutomationProperties.Name="Mikrofonpegel"/>
+          <Grid>
+            <TextBlock Text="Leise" FontSize="11" Foreground="{ThemeResource FonooMuted}"/>
+            <TextBlock Text="Laut" FontSize="11" Foreground="{ThemeResource FonooMuted}" HorizontalAlignment="Right"/>
+          </Grid>
+          <TextBlock x:Name="LevelHint" Text="Sprich kurz in dein Mikrofon. Der Pegel bewegt sich mit deiner Stimme." TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource FonooMuted}"/>
+          <Button x:Name="EchoTestButton" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <FontIcon Glyph="&#xE767;" FontSize="14"/>
+              <TextBlock x:Name="EchoTestLabel" Text="Mich selbst hören"/>
+            </StackPanel>
+          </Button>
+          <StackPanel x:Name="EchoProgress" Spacing="6" Visibility="Collapsed">
+            <ProgressBar x:Name="EchoTime" Minimum="0" Maximum="15" Height="4" Foreground="{ThemeResource FonooPurple}" Background="{ThemeResource FonooLine}" AutomationProperties.Name="Restzeit des Mikrofon-Hörtests"/>
+            <TextBlock x:Name="EchoTimeLabel" FontSize="12" TextWrapping="Wrap"/>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+
+      <Border Background="{ThemeResource FonooBackground}" BorderBrush="{ThemeResource FonooLine}" BorderThickness="1" CornerRadius="10" Padding="16">
+        <StackPanel Spacing="10">
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <FontIcon Glyph="&#xE767;" FontSize="18" Foreground="{ThemeResource FonooPurple}"/>
+            <TextBlock Text="Lautsprecher / Kopfhörer" FontSize="16" FontWeight="SemiBold"/>
+          </StackPanel>
+          <ComboBox x:Name="OutputSelector" HorizontalAlignment="Stretch" DisplayMemberPath="Name" SelectedValuePath="Id" PlaceholderText="Keine Ausgabe verfügbar" AutomationProperties.Name="Lautsprecher oder Kopfhörer auswählen"/>
+          <Button x:Name="SpeakerTestButton" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <FontIcon Glyph="&#xE768;" FontSize="14"/>
+              <TextBlock x:Name="SpeakerTestLabel" Text="Testton abspielen"/>
+            </StackPanel>
+          </Button>
+          <TextBlock x:Name="SpeakerHint" Text="Du hörst einen kurzen Testton über das ausgewählte Gerät." FontSize="12" TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}"/>
+        </StackPanel>
+      </Border>
+
+      <TextBlock Text="Die Tests bleiben auf deinem PC. Es wird kein Gespräch gestartet und kein Audio gespeichert oder übertragen." FontSize="12" TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}"/>
+      <Expander Header="Kein Ton? Das kannst du prüfen" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+        <StackPanel Spacing="8">
+          <TextBlock Text="Prüfe die Lautstärke und den Stummschalter deines Headsets. Wähle oben das passende Ein- und Ausgabegerät." TextWrapping="Wrap" FontSize="12"/>
+          <TextBlock Text="Für „Mich selbst hören“ eignen sich Kopfhörer, damit keine Rückkopplung entsteht. Der Hörtest endet nach 15 Sekunden." TextWrapping="Wrap" FontSize="12"/>
+          <TextBlock Text="Fehlt ein Gerät, verbinde es erneut und aktualisiere die Liste. Prüfe bei fehlendem Mikrofonpegel in Windows auch den Mikrofonzugriff für Desktop-Apps." TextWrapping="Wrap" FontSize="12"/>
+        </StackPanel>
+      </Expander>
+      <Grid ColumnSpacing="10">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+        <Button x:Name="RefreshButton" Content="Geräte aktualisieren" HorizontalAlignment="Stretch" AutomationProperties.Name="Audiogeräte aktualisieren"/>
+        <Button x:Name="WindowsSettingsButton" Grid.Column="1" Content="Windows-Einstellungen" HorizontalAlignment="Stretch" ToolTipService.ToolTip="Windows-Audioeinstellungen öffnen" AutomationProperties.Name="Windows-Audioeinstellungen öffnen"/>
+      </Grid>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

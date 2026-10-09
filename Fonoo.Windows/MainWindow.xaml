@@ -1,0 +1,237 @@
+<Window x:Class="Fonoo.Windows.MainWindow"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Fonoo">
+ <Grid RequestedTheme="Light" Background="{ThemeResource FonooSurface}">
+  <NavigationView x:Name="DesktopNavigation" PaneDisplayMode="Left" OpenPaneLength="220" IsBackButtonVisible="Collapsed" IsSettingsVisible="False" IsPaneToggleButtonVisible="True" SelectionChanged="DesktopNavigationChanged">
+   <NavigationView.PaneHeader>
+    <StackPanel Orientation="Horizontal" Spacing="3" Margin="16,18,0,24" AutomationProperties.Name="Fonoo">
+     <TextBlock Text="fonoo" FontSize="32" FontWeight="ExtraBold" CharacterSpacing="-45" Foreground="{ThemeResource FonooInk}"/>
+     <Ellipse Width="8" Height="8" Fill="{ThemeResource FonooPurple}" VerticalAlignment="Bottom" Margin="0,0,0,9"/>
+    </StackPanel>
+   </NavigationView.PaneHeader>
+   <NavigationView.MenuItems>
+    <NavigationViewItem x:Name="ConversationTab" Content="Gespräch" Tag="call" Icon="Phone" Visibility="Collapsed"/>
+    <NavigationViewItem x:Name="DialpadTab" Content="Wählen" Tag="dial"><NavigationViewItem.Icon><FontIcon Glyph="&#xE80A;"/></NavigationViewItem.Icon></NavigationViewItem>
+    <NavigationViewItem x:Name="FavoritesTab" Content="Favoriten" Tag="favorites" Icon="Favorite"/>
+    <NavigationViewItem Content="Anrufliste" Tag="recents" Icon="Clock"/>
+    <NavigationViewItem Content="Kontakte" Tag="contacts" Icon="Contact"/>
+    <NavigationViewItem Content="Team" Tag="team" Icon="People"/>
+    <NavigationViewItem x:Name="AccountTab" Content="Konto" Tag="account" Icon="ContactInfo"/>
+   </NavigationView.MenuItems>
+   <NavigationView.PaneFooter>
+    <StackPanel x:Name="SidebarFooter" Spacing="6" Margin="4,12,12,20">
+     <Grid x:Name="SidebarStatus" MinHeight="32" ColumnSpacing="8" AutomationProperties.LiveSetting="Polite">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+      <SymbolIcon x:Name="SidebarConnectedIcon" Symbol="Accept" Foreground="{ThemeResource FonooCallGreen}" Visibility="Collapsed" AutomationProperties.Name="{Binding Text, ElementName=Status}"/>
+      <SymbolIcon x:Name="SidebarDisconnectedIcon" Symbol="Important" Foreground="{ThemeResource FonooMuted}" AutomationProperties.Name="{Binding Text, ElementName=Status}"/>
+      <TextBlock x:Name="Status" Grid.Column="1" Text="Nicht angemeldet" FontSize="12" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Foreground="{ThemeResource FonooMuted}" AutomationProperties.LiveSetting="Polite"/>
+     </Grid>
+     <Grid x:Name="SidebarIdentity" MinHeight="40" ColumnSpacing="8">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+      <SymbolIcon Symbol="ContactInfo" Foreground="{ThemeResource FonooMuted}"/>
+      <StackPanel x:Name="SidebarIdentityText" Grid.Column="1" Spacing="3" VerticalAlignment="Center">
+       <TextBlock x:Name="CompanyName" FontSize="12" TextTrimming="CharacterEllipsis"/>
+       <TextBlock x:Name="ExtensionLabel" FontSize="12" TextTrimming="CharacterEllipsis" Foreground="{ThemeResource FonooMuted}"/>
+      </StackPanel>
+     </Grid>
+     <Button x:Name="DndButton" Click="DndClicked" Visibility="Collapsed" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" MinHeight="36" Padding="0" Background="Transparent" BorderThickness="0" CornerRadius="6">
+      <Grid x:Name="DndContent" ColumnSpacing="8"><Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+       <FontIcon x:Name="DndInactiveIcon" Glyph="&#xE7ED;" FontSize="20" Foreground="{ThemeResource FonooMuted}"/>
+       <FontIcon x:Name="DndActiveIcon" Glyph="&#xE7ED;" FontSize="20" Foreground="{ThemeResource FonooPurple}" Visibility="Collapsed"/>
+       <TextBlock x:Name="DndLabel" Grid.Column="1" Text="Nicht stören" VerticalAlignment="Center" FontSize="12" TextTrimming="CharacterEllipsis"/>
+      </Grid>
+     </Button>
+     <Button x:Name="ReconnectButton" Click="ReconnectClicked" Visibility="Collapsed" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" MinHeight="36" Padding="0" Background="Transparent" BorderThickness="0" CornerRadius="6" ToolTipService.ToolTip="Telefonie erneut verbinden" AutomationProperties.Name="Telefonie erneut verbinden">
+      <Grid x:Name="ReconnectContent" ColumnSpacing="8"><Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+       <SymbolIcon Symbol="Sync" Foreground="{ThemeResource FonooMuted}"/>
+       <TextBlock x:Name="ReconnectLabel" Grid.Column="1" Text="Erneut verbinden" VerticalAlignment="Center" FontSize="12" TextTrimming="CharacterEllipsis"/>
+      </Grid>
+     </Button>
+    </StackPanel>
+   </NavigationView.PaneFooter>
+   <Grid RowSpacing="0">
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <Border BorderBrush="{ThemeResource FonooLine}" BorderThickness="0,0,0,1" Padding="28,16">
+     <Grid><Grid.RowDefinitions><RowDefinition/><RowDefinition Height="Auto"/></Grid.RowDefinitions><TextBlock x:Name="PageTitle" Text="Anmelden" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
+      <Button Content="Audio" HorizontalAlignment="Right" Click="AudioClicked" ToolTipService.ToolTip="Audioeinstellungen"/>
+      <Button x:Name="PreviewCallButton" Content="Gesprächsvorschau" HorizontalAlignment="Right" Margin="0,0,136,0" Click="PreviewCallClicked" Visibility="Collapsed"/>
+      <Button x:Name="PreviewMiniButton" Content="Mini" HorizontalAlignment="Right" Margin="0,0,72,0" Click="PreviewMiniClicked" Visibility="Collapsed"/>
+      <Button x:Name="CallReturnButton" Grid.Row="1" Content="Zurück zum Gespräch" Click="ReturnToCallClicked" Visibility="Collapsed" Margin="0,12,0,0" Style="{ThemeResource AccentButtonStyle}" HorizontalAlignment="Stretch"/>
+     </Grid>
+    </Border>
+    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+     <ContentControl x:Name="Actions" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+      <Grid Padding="36">
+       <StackPanel x:Name="AccountContainer" Spacing="22" MaxWidth="580" HorizontalAlignment="Left" VerticalAlignment="Top">
+                        <StackPanel x:Name="LoginPanel" Spacing="18">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Willkommen auf deinem Windows-PC" FontSize="30" FontWeight="Bold" TextWrapping="Wrap" Foreground="{ThemeResource FonooInk}"/>
+                                <TextBlock Text="Melde dich an. Deine Firma und Nebenstelle werden automatisch eingerichtet." TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}"/>
+                            </StackPanel>
+                            <TextBox x:Name="Email" Header="E-Mail-Adresse" PlaceholderText="name@firma.at" InputScope="EmailSmtpAddress" TextChanged="EmailChanged" KeyDown="EmailKeyDown" AutomationProperties.Name="E-Mail-Adresse"/>
+                            <Button x:Name="SendCodeButton" Content="Bestätigungscode senden" Click="SendCodeClicked" HorizontalAlignment="Stretch" Style="{ThemeResource AccentButtonStyle}" CornerRadius="10" Padding="16,12"/>
+                            <CheckBox x:Name="RememberDevice" Content="Auf diesem PC angemeldet bleiben" IsChecked="True"/>
+                            <StackPanel x:Name="CodePanel" Spacing="12" Visibility="Collapsed">
+                                <TextBox x:Name="Code" Header="Sechsstelliger Bestätigungscode" MaxLength="6" InputScope="Number" KeyDown="CodeKeyDown" AutomationProperties.Name="Bestätigungscode"/>
+                                <Button Content="Bestätigen und anmelden" Click="VerifyClicked" HorizontalAlignment="Stretch" Style="{ThemeResource AccentButtonStyle}" CornerRadius="10"/>
+                            </StackPanel>
+                            <Expander Header="Mit Passwort anmelden" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                                      Background="{ThemeResource FonooSurface}" BorderBrush="{ThemeResource FonooLine}" Padding="16" CornerRadius="8">
+                                <StackPanel Spacing="12" HorizontalAlignment="Stretch">
+                                    <PasswordBox x:Name="Password" Header="Passwort" HorizontalAlignment="Stretch" KeyDown="PasswordKeyDown" AutomationProperties.Name="Passwort"/>
+                                    <Button Content="Anmelden" Click="PasswordClicked" HorizontalAlignment="Stretch" Style="{ThemeResource AccentButtonStyle}" CornerRadius="8" Padding="16,12"/>
+                                </StackPanel>
+                            </Expander>
+                        </StackPanel>
+                        <StackPanel x:Name="SetupPanel" Spacing="18" Visibility="Collapsed">
+                            <TextBlock Text="Dein Anschluss." FontSize="30" FontWeight="Bold" Foreground="{ThemeResource FonooInk}"/>
+                            <TextBlock x:Name="SetupDescription" TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}"/>
+                            <ComboBox x:Name="Companies" Header="Firma und Nebenstelle" DisplayMemberPath="DisplayName" HorizontalAlignment="Stretch" SelectionChanged="CompanyChanged"/>
+                            <Button x:Name="ConnectButton" Content="Nebenstelle einrichten" Click="ConnectClicked" HorizontalAlignment="Stretch" Style="{ThemeResource AccentButtonStyle}" CornerRadius="10"/>
+                            <Button Content="Zuweisung aktualisieren" Click="RefreshClicked" HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+
+        <StackPanel x:Name="SignedInPanel" Spacing="18" Visibility="Collapsed">
+         <TextBlock Text="Dein fonoo-Konto" FontSize="30" FontWeight="Bold"/>
+         <TextBlock x:Name="AccountEmail" Foreground="{ThemeResource FonooMuted}"/>
+         <TextBlock Text="Firma und Nebenstelle findest du in der Seitenleiste. Fonoo bleibt beim Schließen des Fensters im Infobereich erreichbar. Mit „Fonoo beenden“ schließt du die App vollständig." TextWrapping="Wrap"/>
+         <TextBlock x:Name="RememberedStatus" TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}"/><Button x:Name="SetAccountPasswordButton" Content="Passwort festlegen / ändern" Click="SetPasswordClicked" Visibility="Collapsed"/>
+         <Button Content="Firma / Nebenstelle wechseln" Click="ChangeCompanyClicked"/>
+         <Button Content="Status aktualisieren" Click="RefreshClicked"/>
+         <HyperlinkButton Content="Kundenbereich öffnen" NavigateUri="https://dev.fonoo.app/kunden/"/>
+        </StackPanel>
+        <Button Content="Fonoo beenden" Click="QuitClicked"/>
+        <Button x:Name="SignOutButton" Content="Abmelden" Click="SignOutClicked" Visibility="Collapsed"/>
+       </StackPanel>
+       <Grid x:Name="PhonePanel" Visibility="Collapsed">
+        <StackPanel x:Name="DialpadPanel" Spacing="22" MaxWidth="340" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+         <FontIcon Glyph="&#xE8F2;" FontSize="32" Foreground="{ThemeResource FonooPurple}"/>
+         <TextBlock Text="Wen möchtest du anrufen?" FontSize="22" FontWeight="SemiBold" TextAlignment="Center" TextWrapping="Wrap"/>
+         <Grid Background="{ThemeResource FonooBackground}" CornerRadius="12" Padding="6">
+          <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+          <TextBox x:Name="Number" PlaceholderText="Nummer oder Nebenstelle" MaxLength="64" FontSize="20" BorderThickness="0" Background="Transparent" InputScope="TelephoneNumber" TextChanged="NumberChanged" KeyDown="NumberKeyDown" AutomationProperties.Name="Zielrufnummer"/>
+          <Button x:Name="DeleteButton" Grid.Column="1" Click="DeleteClicked" Background="Transparent" BorderThickness="0" AutomationProperties.Name="Letzte Ziffer löschen"><FontIcon Glyph="&#xE94F;" FontSize="18"/></Button>
+         </Grid>
+         <Grid x:Name="Keypad" ColumnSpacing="10" RowSpacing="10">
+          <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+          <Grid.RowDefinitions><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+         </Grid>
+         <Button x:Name="PlusButton" Content="+ Internationale Vorwahl" Click="PlusClicked" HorizontalAlignment="Center" Background="Transparent" BorderThickness="0" FontSize="12"/>
+         <Button x:Name="CallButton" Click="CallClicked" IsEnabled="False" Style="{ThemeResource AccentButtonStyle}" HorizontalAlignment="Stretch" Height="44" CornerRadius="8" ToolTipService.ToolTip="Anrufen (Enter)">
+          <StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE717;" FontSize="18"/><TextBlock Text="Anrufen"/></StackPanel>
+         </Button>
+        </StackPanel>
+        <StackPanel x:Name="FavoritesPanel" Visibility="Collapsed" Spacing="22">
+         <Button x:Name="AddFavoriteButton" Content="Favorit hinzufügen" Click="AddFavoriteClicked" HorizontalAlignment="Right"/>
+         <TextBlock x:Name="NoFavorites" Text="Deine Favoriten&#x0a;Füge Kontakte hinzu, um sie hier schnell anzurufen." TextWrapping="Wrap" TextAlignment="Center" Margin="0,60,0,0" Foreground="{ThemeResource FonooMuted}"/>
+         <ListView x:Name="FavoritesGrid" SelectionMode="None" IsItemClickEnabled="True" ItemClick="FavoriteClicked" HorizontalContentAlignment="Stretch">
+          <ListView.ItemTemplate><DataTemplate>
+           <Grid Padding="4,10" ColumnSpacing="12">
+            <Grid.ContextFlyout><MenuFlyout><MenuFlyoutItem Text="Bearbeiten" Tag="{Binding Favorite}" Click="EditFavoriteClicked"/><MenuFlyoutItem Text="Entfernen" Tag="{Binding Favorite}" Click="RemoveFavoriteClicked"/></MenuFlyout></Grid.ContextFlyout>
+            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <Border Width="38" Height="38" CornerRadius="19" Background="#EBE5FB"><TextBlock Text="{Binding Initials}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{ThemeResource FonooPurple}" FontWeight="SemiBold"/></Border>
+            <StackPanel Grid.Column="1" Spacing="4">
+             <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/><TextBlock Text="{Binding Number}" Foreground="{ThemeResource FonooMuted}"/>
+             <StackPanel Orientation="Horizontal" Spacing="7" Visibility="{Binding Phone.Visibility}"><Ellipse Width="7" Height="7" Fill="{Binding Phone.Brush}" VerticalAlignment="Center"/><TextBlock Text="{Binding Phone.Text}" Foreground="{Binding Phone.Brush}" FontSize="12"/></StackPanel>
+             <TextBlock Text="{Binding Phone.Detail}" Visibility="{Binding Phone.DetailVisibility}" Foreground="{ThemeResource FonooMuted}" FontSize="12" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{Binding Phone.Detail}"/>
+            </StackPanel>
+            <FontIcon Grid.Column="2" Glyph="&#xE717;" FontSize="18" Foreground="{ThemeResource FonooPurple}"/>
+           </Grid>
+          </DataTemplate></ListView.ItemTemplate>
+         </ListView>
+        </StackPanel>
+        <StackPanel x:Name="RecentsPanel" Visibility="Collapsed" Spacing="18">
+         <Grid ColumnSpacing="8">
+          <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+          <TextBlock Text="Deine Anrufe" FontSize="26" FontWeight="SemiBold"/>
+          <Button Grid.Column="1" Click="RefreshHistoryClicked" ToolTipService.ToolTip="Anrufliste aktualisieren" AutomationProperties.Name="Anrufliste aktualisieren"><SymbolIcon Symbol="Refresh"/></Button>
+          <Button x:Name="ClearHistoryButton" Grid.Column="2" Content="Liste löschen" Click="ClearHistoryClicked"/>
+         </Grid>
+         <SelectorBar x:Name="HistoryFilter" SelectionChanged="HistoryFilterChanged" HorizontalAlignment="Left" AutomationProperties.Name="Anrufe filtern">
+          <SelectorBarItem Text="Alle" IsSelected="True"/>
+          <SelectorBarItem x:Name="MissedHistoryFilter" Text="Verpasst"/>
+         </SelectorBar>
+         <TextBox x:Name="HistorySearch" PlaceholderText="Rufnummer suchen" TextChanged="HistorySearchChanged" AutomationProperties.Name="Anrufliste durchsuchen"/>
+         <TextBlock x:Name="HistoryEmpty" Text="Noch keine Anrufe. Deine Gespräche auf diesem PC erscheinen hier." TextWrapping="Wrap" Margin="0,24" Foreground="{ThemeResource FonooMuted}"/>
+         <ListView x:Name="HistoryList" MaxHeight="520" SelectionMode="None" IsItemClickEnabled="True" ItemClick="HistoryClicked" HorizontalContentAlignment="Stretch">
+          <ListView.ItemTemplate><DataTemplate><Grid Padding="4,10" ColumnSpacing="12">
+           <Grid.ContextFlyout><MenuFlyout><MenuFlyoutItem Text="Aus Anrufliste löschen" Tag="{Binding}" Click="DeleteHistoryClicked"><MenuFlyoutItem.Icon><SymbolIcon Symbol="Delete"/></MenuFlyoutItem.Icon></MenuFlyoutItem></MenuFlyout></Grid.ContextFlyout>
+           <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel Spacing="5"><TextBlock Text="{Binding Title}" FontWeight="SemiBold"/><TextBlock Text="{Binding Detail}" Foreground="{ThemeResource FonooMuted}" FontSize="12"/></StackPanel><TextBlock Grid.Column="1" Text="{Binding Duration}" Foreground="{ThemeResource FonooMuted}" VerticalAlignment="Center"/>
+          </Grid></DataTemplate></ListView.ItemTemplate>
+         </ListView>
+         <TextBlock x:Name="HistorySyncStatus" Text="Auf diesem PC gespeichert · getrennt nach Konto und Firma" FontSize="12" Foreground="{ThemeResource FonooMuted}" TextWrapping="Wrap"/>
+         <TextBlock x:Name="HistoryRetentionStatus" Text="Der gemeinsame Verlauf enthält die letzten 90 Tage und bis zu 500 Anrufe." FontSize="12" Foreground="{ThemeResource FonooMuted}" TextWrapping="Wrap"/>
+        </StackPanel>
+        <StackPanel x:Name="ContactsPanel" Visibility="Collapsed" Spacing="18">
+         <TextBlock Text="Deine Kontakte" FontSize="26" FontWeight="SemiBold"/>
+         <TextBlock Text="Wähle einen Kontakt zum Anrufen oder speichere eine Rufnummer über den Stern in deinen Favoriten." TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}"/>
+         <Border BorderBrush="{ThemeResource FonooLine}" BorderThickness="1" CornerRadius="8" Padding="18">
+          <StackPanel Spacing="12">
+           <Grid ColumnSpacing="12"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel Spacing="5"><TextBlock Text="Outlook-Kontakte" FontSize="18" FontWeight="SemiBold"/><TextBlock x:Name="OutlookAccount" Foreground="{ThemeResource FonooMuted}" TextTrimming="CharacterEllipsis"/></StackPanel><ProgressRing x:Name="OutlookProgress" Grid.Column="1" Width="24" Height="24" IsActive="False" Visibility="Collapsed"/></Grid>
+           <TextBlock x:Name="OutlookStatus" TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}" FontSize="13"/>
+           <StackPanel Orientation="Horizontal" Spacing="8"><Button x:Name="ConnectOutlookButton" Content="Outlook verbinden" Click="ConnectOutlookClicked" Style="{ThemeResource AccentButtonStyle}"/><Button x:Name="RefreshOutlookButton" Content="Aktualisieren" Click="RefreshOutlookClicked" Visibility="Collapsed"/><Button x:Name="DisconnectOutlookButton" Content="Verbindung trennen" Click="DisconnectOutlookClicked" Visibility="Collapsed"/></StackPanel>
+           <Button x:Name="MicrosoftPortalButton" Content="Firmenverbindung im Kundenbereich" Click="MicrosoftPortalClicked"/>
+           <TextBlock Text="Lesezugriff auf deine Postfachkontakte · auf diesem PC geschützt gespeichert" FontSize="12" Foreground="{ThemeResource FonooMuted}" TextWrapping="Wrap"/>
+          </StackPanel>
+         </Border>
+         <StackPanel Orientation="Horizontal" Spacing="8"><Button Content="Windows-Kontakte laden" Click="LoadContactsClicked"/><Button Content="vCard öffnen" Click="ImportContactsClicked"/></StackPanel>
+         <TextBox x:Name="ContactsSearch" PlaceholderText="Name oder Rufnummer suchen" TextChanged="ContactsSearchChanged" AutomationProperties.Name="Kontakte durchsuchen"/>
+         <TextBlock x:Name="ContactsEmpty" Text="Noch keine Kontakte geladen." Foreground="{ThemeResource FonooMuted}" TextWrapping="Wrap" Margin="0,24"/>
+         <ListView x:Name="ContactsList" MaxHeight="480" SelectionMode="None" IsItemClickEnabled="True" ItemClick="ContactClicked" HorizontalContentAlignment="Stretch">
+          <ListView.ItemTemplate><DataTemplate>
+           <Grid Padding="4,10" ColumnSpacing="12">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <Border Width="38" Height="38" CornerRadius="19" Background="#EBE5FB"><TextBlock Text="{Binding Initials}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource FonooPurple}" FontWeight="SemiBold"/></Border>
+            <StackPanel Grid.Column="1" Spacing="4"><TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/><TextBlock Text="{Binding Detail}" Foreground="{ThemeResource FonooMuted}" TextTrimming="CharacterEllipsis"/></StackPanel>
+            <Button Grid.Column="2" Width="38" Height="38" Padding="8" VerticalAlignment="Center" Background="Transparent" BorderThickness="0" Tag="{Binding Contact}" IsEnabled="{Binding CanAddFavorite}" Click="ContactFavoriteClicked" ToolTipService.ToolTip="{Binding FavoriteAction}" AutomationProperties.Name="{Binding FavoriteAction}">
+             <FontIcon Glyph="{Binding FavoriteGlyph}" FontSize="18" Foreground="{ThemeResource FonooPurple}"/>
+            </Button>
+           </Grid>
+          </DataTemplate></ListView.ItemTemplate>
+         </ListView>
+         <HyperlinkButton Content="Kontaktezugriff in Windows verwalten" NavigateUri="ms-settings:privacy-contacts"/>
+        </StackPanel>
+        <StackPanel x:Name="TeamPanel" Visibility="Collapsed" Spacing="18">
+         <TextBlock x:Name="TeamCompany" Text="Dein Team" FontSize="26" FontWeight="SemiBold"/>
+         <TextBlock Text="Internes Firmenadressbuch" Foreground="{ThemeResource FonooMuted}"/>
+         <StackPanel Orientation="Horizontal" Spacing="8"><Button Content="Aktualisieren" Click="RefreshTeamClicked"/><Button Content="Meine Verfügbarkeit &amp; Rufteams" Click="AvailabilityClicked"/></StackPanel>
+         <Button x:Name="PreviewPresenceButton" Content="Statusbeispiele anzeigen" Click="PreviewPresenceClicked" Visibility="Collapsed" HorizontalAlignment="Left"/>
+         <TextBox x:Name="TeamSearch" PlaceholderText="Name, E-Mail oder Nebenstelle suchen" TextChanged="TeamSearchChanged" AutomationProperties.Name="Team durchsuchen"/>
+         <TextBlock x:Name="TeamMessage" Text="Lade dein Firmenverzeichnis." TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}"/>
+         <ListView x:Name="TeamList" MaxHeight="340" SelectionMode="Single" SelectionChanged="TeamSelected" HorizontalContentAlignment="Stretch"><ListView.ItemTemplate><DataTemplate><Grid Padding="4,10" ColumnSpacing="12"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Border Width="38" Height="38" CornerRadius="19" Background="#EBE5FB"><TextBlock Text="{Binding Initials}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource FonooPurple}" FontWeight="SemiBold"/></Border><StackPanel Grid.Column="1" Spacing="4"><TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/><TextBlock Text="{Binding Detail}" Foreground="{ThemeResource FonooMuted}" TextTrimming="CharacterEllipsis"/><StackPanel Orientation="Horizontal" Spacing="7"><Ellipse Width="7" Height="7" Fill="{Binding Phone.Brush}" VerticalAlignment="Center"/><TextBlock Text="{Binding Phone.Text}" Foreground="{Binding Phone.Brush}" FontSize="12"/></StackPanel><TextBlock Text="{Binding Phone.Detail}" Visibility="{Binding Phone.DetailVisibility}" Foreground="{ThemeResource FonooMuted}" FontSize="12" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{Binding Phone.Detail}"/><TextBlock Text="{Binding AvailabilityLabel}" Foreground="{ThemeResource FonooMuted}" FontSize="12"/></StackPanel></Grid></DataTemplate></ListView.ItemTemplate></ListView>
+         <TextBlock x:Name="TeamPresenceStatus" Text="Telefonstatus unbekannt · keine aktuelle Rückmeldung" Foreground="{ThemeResource FonooMuted}" FontSize="12" TextWrapping="Wrap"/>
+         <Border x:Name="TeamDetailPanel" Visibility="Collapsed" BorderBrush="{ThemeResource FonooLine}" BorderThickness="1" Padding="18" CornerRadius="8">
+          <StackPanel Spacing="12"><TextBlock x:Name="TeamDetailName" FontSize="22" FontWeight="SemiBold"/><TextBlock x:Name="TeamDetailPresence" TextWrapping="Wrap"/><TextBlock x:Name="TeamDetailText" TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}"/>
+           <StackPanel Orientation="Horizontal" Spacing="8"><Button x:Name="TeamCallButton" Content="Anrufen" Click="CallTeamClicked" Style="{ThemeResource AccentButtonStyle}"/><Button x:Name="TeamFavoriteButton" Content="Als Favorit" Click="FavoriteTeamClicked"/><Button x:Name="RenameSelfButton" Content="Name ändern" Click="RenameSelfClicked" Visibility="Collapsed"/></StackPanel>
+          </StackPanel>
+         </Border>
+        </StackPanel>
+        <StackPanel x:Name="CallPanel" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Stretch" Spacing="16" MaxWidth="380">
+         <Border Width="88" Height="88" CornerRadius="44" Background="#EBE5FB"><FontIcon Glyph="&#xE717;" FontSize="36" Foreground="{ThemeResource FonooPurple}"/></Border>
+         <TextBlock x:Name="CallPeer" FontSize="32" FontWeight="SemiBold" TextAlignment="Center"/>
+         <TextBlock x:Name="CallPeerNumber" FontSize="14" TextAlignment="Center" Foreground="{ThemeResource FonooMuted}" Visibility="Collapsed"/>
+         <TextBlock x:Name="CallStatus" TextWrapping="Wrap" TextAlignment="Center" AutomationProperties.LiveSetting="Polite"/>
+         <TextBlock x:Name="CallDuration" FontSize="22" TextAlignment="Center" Foreground="{ThemeResource FonooPurple}"/>
+         <StackPanel x:Name="CallWave" Height="24" Orientation="Horizontal" Spacing="4" HorizontalAlignment="Center" AutomationProperties.Name="Gesprächsaktivität"><Rectangle Width="4" Height="4" RadiusX="2" RadiusY="2" Fill="{ThemeResource FonooPurple}" VerticalAlignment="Center"/><Rectangle Width="4" Height="4" RadiusX="2" RadiusY="2" Fill="{ThemeResource FonooPurple}" VerticalAlignment="Center"/><Rectangle Width="4" Height="4" RadiusX="2" RadiusY="2" Fill="{ThemeResource FonooPurple}" VerticalAlignment="Center"/><Rectangle Width="4" Height="4" RadiusX="2" RadiusY="2" Fill="{ThemeResource FonooPurple}" VerticalAlignment="Center"/><Rectangle Width="4" Height="4" RadiusX="2" RadiusY="2" Fill="{ThemeResource FonooPurple}" VerticalAlignment="Center"/></StackPanel>
+         <TextBlock x:Name="OriginalCallLabel" TextWrapping="Wrap" TextAlignment="Center" Foreground="{ThemeResource FonooMuted}" Visibility="Collapsed"/>
+         <Button x:Name="AnswerButton" Content="Annehmen" Click="AnswerClicked" Visibility="Collapsed" HorizontalAlignment="Stretch" Background="#209B53" Foreground="White"/>
+         <Button x:Name="MuteButton" Content="Stummschalten" Click="MuteClicked" HorizontalAlignment="Stretch"/>
+         <Button x:Name="HoldButton" Content="Halten" Click="HoldClicked" HorizontalAlignment="Stretch"/>
+         <Button x:Name="TransferButton" Content="Weiterleiten / Rückfrage" Click="TransferClicked" HorizontalAlignment="Stretch"/>
+         <Button x:Name="CompleteTransferButton" Content="Gespräche verbinden" Click="CompleteTransferClicked" HorizontalAlignment="Stretch" Style="{ThemeResource AccentButtonStyle}" Visibility="Collapsed"/>
+         <Button x:Name="ReturnOriginalButton" Content="Zurück zum ursprünglichen Gespräch" Click="ReturnOriginalClicked" HorizontalAlignment="Stretch" Visibility="Collapsed"/>
+         <Button x:Name="CallKeypadButton" Content="Tastenfeld" Click="ShowDialpadClicked" HorizontalAlignment="Stretch"/>
+         <Button x:Name="HangUpButton" Content="Auflegen" Click="HangUpClicked" HorizontalAlignment="Stretch" Background="#C42B1C" Foreground="White"/>
+        </StackPanel>
+       </Grid>
+      </Grid>
+     </ContentControl>
+    </ScrollViewer>
+    <StackPanel Grid.Row="2" Spacing="8" Margin="28,0,28,16">
+     <ProgressRing x:Name="Progress" IsActive="False" Visibility="Collapsed" Width="24" Height="24" HorizontalAlignment="Left"/>
+     <InfoBar x:Name="Notice" IsOpen="False" IsClosable="True" Severity="Error"/>
+    </StackPanel>
+   </Grid>
+  </NavigationView>
+ </Grid>
+</Window>
