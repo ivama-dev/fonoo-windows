@@ -158,13 +158,23 @@ public sealed partial class MainWindow
             ShowNotice("Kontakt in deinen Favoriten gespeichert.", InfoBarSeverity.Success);
     }
     private void ContactsSearchChanged(object sender, TextChangedEventArgs e) { if (ContactsList is not null) RenderContacts(); }
+    private void ContactsNavigationChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
+    {
+        if (ContactsListPanel is null || ContactSourcesPanel is null || ContactsViewDescription is null) return;
+        var sources = sender.SelectedItem == ContactSourcesTab;
+        ContactsListPanel.Visibility = sources ? Visibility.Collapsed : Visibility.Visible;
+        ContactSourcesPanel.Visibility = sources ? Visibility.Visible : Visibility.Collapsed;
+        ContactsViewDescription.Text = sources
+            ? "Verbinde Outlook oder lade Kontakte aus Windows und vCard-Dateien. Alle Kontakte erscheinen gemeinsam in deiner Kontaktliste."
+            : "Wähle einen Kontakt zum Anrufen oder speichere eine Rufnummer über den Stern in deinen Favoriten.";
+    }
     private void RenderContacts()
     {
         var all = contacts.Concat(outlookContacts).DistinctBy(c => (c.Name, c.Number)).OrderBy(c => c.Name, StringComparer.CurrentCultureIgnoreCase).ToArray();
         var rows = all.Where(c => c.Matches(ContactsSearch.Text)).Select(c => new ContactListItem(c)).ToArray(); ContactsList.ItemsSource = rows;
         UpdateContactFavorites();
         ContactsEmpty.Visibility = rows.Length == 0 ? Visibility.Visible : Visibility.Collapsed;
-        ContactsEmpty.Text = all.Length == 0 ? "Keine Kontakte mit wählbarer Rufnummer geladen. Verbinde Outlook, lade Windows-Kontakte oder öffne eine vCard-Datei." : "Keine passenden Kontakte.";
+        ContactsEmpty.Text = all.Length == 0 ? "Noch keine Kontakte mit wählbarer Rufnummer. Im Reiter „Kontaktquellen“ kannst du Outlook verbinden, Windows-Kontakte laden oder eine vCard-Datei öffnen." : "Keine passenden Kontakte.";
         RenderPresence();
     }
     private void UpdateContactFavorites()

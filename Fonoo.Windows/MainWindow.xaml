@@ -211,17 +211,12 @@
         </StackPanel>
         <StackPanel x:Name="ContactsPanel" Visibility="Collapsed" Spacing="18">
          <TextBlock Text="Deine Kontakte" FontSize="26" FontWeight="SemiBold"/>
-         <TextBlock Text="Wähle einen Kontakt zum Anrufen oder speichere eine Rufnummer über den Stern in deinen Favoriten." TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}"/>
-         <Border BorderBrush="{ThemeResource FonooLine}" BorderThickness="1" CornerRadius="8" Padding="18">
-          <StackPanel Spacing="12">
-           <Grid ColumnSpacing="12"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel Spacing="5"><TextBlock Text="Outlook-Kontakte" FontSize="18" FontWeight="SemiBold"/><TextBlock x:Name="OutlookAccount" Foreground="{ThemeResource FonooMuted}" TextTrimming="CharacterEllipsis"/></StackPanel><ProgressRing x:Name="OutlookProgress" Grid.Column="1" Width="24" Height="24" IsActive="False" Visibility="Collapsed"/></Grid>
-           <TextBlock x:Name="OutlookStatus" TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}" FontSize="13"/>
-           <StackPanel Orientation="Horizontal" Spacing="8"><Button x:Name="ConnectOutlookButton" Content="Outlook verbinden" Click="ConnectOutlookClicked" Style="{ThemeResource AccentButtonStyle}"/><Button x:Name="RefreshOutlookButton" Content="Aktualisieren" Click="RefreshOutlookClicked" Visibility="Collapsed"/><Button x:Name="DisconnectOutlookButton" Content="Verbindung trennen" Click="DisconnectOutlookClicked" Visibility="Collapsed"/></StackPanel>
-           <Button x:Name="MicrosoftPortalButton" Content="Firmenverbindung im Kundenbereich" Click="MicrosoftPortalClicked"/>
-           <TextBlock Text="Lesezugriff auf deine Postfachkontakte · auf diesem PC geschützt gespeichert" FontSize="12" Foreground="{ThemeResource FonooMuted}" TextWrapping="Wrap"/>
-          </StackPanel>
-         </Border>
-         <StackPanel Orientation="Horizontal" Spacing="8"><Button Content="Windows-Kontakte laden" Click="LoadContactsClicked"/><Button Content="vCard öffnen" Click="ImportContactsClicked"/></StackPanel>
+         <SelectorBar x:Name="ContactsNavigation" SelectionChanged="ContactsNavigationChanged" HorizontalAlignment="Left" AutomationProperties.Name="Kontaktbereich auswählen">
+          <SelectorBarItem Text="Kontaktliste" IsSelected="True"/>
+          <SelectorBarItem x:Name="ContactSourcesTab" Text="Kontaktquellen"/>
+         </SelectorBar>
+         <TextBlock x:Name="ContactsViewDescription" Text="Wähle einen Kontakt zum Anrufen oder speichere eine Rufnummer über den Stern in deinen Favoriten." TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}"/>
+         <StackPanel x:Name="ContactsListPanel" Spacing="18">
          <TextBox x:Name="ContactsSearch" PlaceholderText="Name oder Rufnummer suchen" TextChanged="ContactsSearchChanged" AutomationProperties.Name="Kontakte durchsuchen"/>
          <TextBlock x:Name="ContactsEmpty" Text="Noch keine Kontakte geladen." Foreground="{ThemeResource FonooMuted}" TextWrapping="Wrap" Margin="0,24"/>
          <ListView x:Name="ContactsList" MaxHeight="480" SelectionMode="None" IsItemClickEnabled="True" ItemClick="ContactClicked" HorizontalContentAlignment="Stretch">
@@ -236,7 +231,33 @@
            </Grid>
           </DataTemplate></ListView.ItemTemplate>
          </ListView>
-         <HyperlinkButton Content="Kontaktezugriff in Windows verwalten" NavigateUri="ms-settings:privacy-contacts"/>
+         </StackPanel>
+         <StackPanel x:Name="ContactSourcesPanel" Spacing="18" Visibility="Collapsed">
+         <Border BorderBrush="{ThemeResource FonooLine}" BorderThickness="1" CornerRadius="8" Padding="18">
+          <StackPanel Spacing="12">
+           <Grid ColumnSpacing="12"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><StackPanel Spacing="5"><TextBlock Text="Outlook-Kontakte" FontSize="18" FontWeight="SemiBold"/><TextBlock x:Name="OutlookAccount" Foreground="{ThemeResource FonooMuted}" TextTrimming="CharacterEllipsis"/></StackPanel><ProgressRing x:Name="OutlookProgress" Grid.Column="1" Width="24" Height="24" IsActive="False" Visibility="Collapsed"/></Grid>
+           <TextBlock x:Name="OutlookStatus" TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}" FontSize="13"/>
+           <StackPanel Orientation="Horizontal" Spacing="8"><Button x:Name="ConnectOutlookButton" Content="Outlook verbinden" Click="ConnectOutlookClicked" Style="{ThemeResource AccentButtonStyle}"/><Button x:Name="RefreshOutlookButton" Content="Aktualisieren" Click="RefreshOutlookClicked" Visibility="Collapsed"/><Button x:Name="DisconnectOutlookButton" Content="Verbindung trennen" Click="DisconnectOutlookClicked" Visibility="Collapsed"/></StackPanel>
+           <Button x:Name="MicrosoftPortalButton" Content="Firmenverbindung im Kundenbereich" Click="MicrosoftPortalClicked"/>
+           <TextBlock Text="Lesezugriff auf deine Postfachkontakte · auf diesem PC geschützt gespeichert" FontSize="12" Foreground="{ThemeResource FonooMuted}" TextWrapping="Wrap"/>
+          </StackPanel>
+         </Border>
+          <Border BorderBrush="{ThemeResource FonooLine}" BorderThickness="1" CornerRadius="8" Padding="18">
+           <StackPanel Spacing="12">
+            <StackPanel Orientation="Horizontal" Spacing="10"><SymbolIcon Symbol="Contact"/><TextBlock Text="Windows-Kontakte" FontSize="18" FontWeight="SemiBold"/></StackPanel>
+            <TextBlock Text="Lade Kontakte aus dem Windows-Adressbuch in deine Kontaktliste." TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}" FontSize="13"/>
+            <Button Content="Windows-Kontakte laden" Click="LoadContactsClicked"/>
+            <HyperlinkButton Content="Kontaktezugriff in Windows verwalten" NavigateUri="ms-settings:privacy-contacts" Padding="0" HorizontalAlignment="Left"/>
+           </StackPanel>
+          </Border>
+          <Border BorderBrush="{ThemeResource FonooLine}" BorderThickness="1" CornerRadius="8" Padding="18">
+           <StackPanel Spacing="12">
+            <StackPanel Orientation="Horizontal" Spacing="10"><SymbolIcon Symbol="Document"/><TextBlock Text="vCard" FontSize="18" FontWeight="SemiBold"/></StackPanel>
+            <TextBlock Text="Öffne eine vCard-Datei (.vcf), um ihre Kontakte zur Liste hinzuzufügen." TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}" FontSize="13"/>
+            <Button Content="vCard öffnen" Click="ImportContactsClicked"/>
+           </StackPanel>
+          </Border>
+         </StackPanel>
         </StackPanel>
         <StackPanel x:Name="TeamPanel" Visibility="Collapsed" Spacing="18">
          <TextBlock x:Name="TeamCompany" Text="Dein Team" FontSize="26" FontWeight="SemiBold"/>
