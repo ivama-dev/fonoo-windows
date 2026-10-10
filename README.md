@@ -6,7 +6,7 @@ Native Windows softphone built with C#, WinUI 3 and **liblinphone SDK 5.5.24**. 
 
 - Fonoo email-code/password sign-in, optional DPAPI-protected remembered login and company/extension provisioning.
 - Dialpad, incoming/outgoing SRTP audio, mute, hold/resume and direct/consultative transfer.
-- Account/company-scoped favorites, synchronized call history with All/Missed filters and shared single-call/list deletion.
+- Account/company-scoped favorites with personal groups, drag reordering and keyboard-accessible move actions; synchronized call history with All/Missed filters and shared single-call/list deletion.
 - Windows/vCard contacts, read-only personal Outlook/Microsoft 365 mailbox contacts and an internal team directory.
 - Shared PBX telephone presence in team/internal favorites, scoped counterpart names and a 15-second Unknown fallback.
 - Shared incoming-call device profiles: quick switch, dynamic Standard, create/edit/delete and per-user/company synchronization.
@@ -39,7 +39,7 @@ For a synthetic UI preview, build Debug with `-p:FonooDesignPreview=true`. The p
 
 The tests use synthetic identities, responses and audio. Desktop/Microsoft contact storage checks need a normal Windows user context for DPAPI; `./Test.ps1 -SkipDpapi` explicitly skips those checks in a restricted command sandbox. [Native SDK diagnostics](diagnostics/LinphoneProbe/README.md) additionally cover local SRTP call/transfer scenarios.
 
-See [device profiles](DEVICE-PROFILES.md), [audio](AUDIO-INTEGRATION.md), [desktop behavior](DESKTOP-UI-2026-10-05.md), [Outlook contacts](MICROSOFT-CONTACTS.md), [telephone presence](TEAM-PRESENCE.md) and [call history](CALL-HISTORY.md). Hardware hotplug, sleep/network recovery, high DPI/accessibility, resource budgets and signed MSIX acceptance remain release checks.
+See [favorite groups and local storage](FAVORITE-GROUPS.md), [device profiles](DEVICE-PROFILES.md), [audio](AUDIO-INTEGRATION.md), [desktop behavior](DESKTOP-UI-2026-10-05.md), [Outlook contacts](MICROSOFT-CONTACTS.md), [telephone presence](TEAM-PRESENCE.md) and [call history](CALL-HISTORY.md). Hardware hotplug, sleep/network recovery, high DPI/accessibility, resource budgets and signed MSIX acceptance remain release checks.
 
 ## License and releases
 

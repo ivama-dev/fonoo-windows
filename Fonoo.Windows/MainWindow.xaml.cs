@@ -199,7 +199,7 @@ public sealed partial class MainWindow : Window
             await StopSipAsync(); ct.ThrowIfCancellationRequested();
             microsoftShutdown = ForgetMicrosoftContactsAsync(); await microsoftShutdown;
             StopPresence(); StopHistorySync(); configuration.ClearSecrets(); configuration = null; activeTenant = "";
-            favorites.Clear(); favoritesStore = null; history.Clear(); historyStore = null; teamSnapshot = null; availability = null;
+            favorites.Clear(); favoriteGroups.Clear(); favoritesStore = null; history.Clear(); historyStore = null; teamSnapshot = null; availability = null;
             RenderFavoriteRows();
             CompanyName.Text = ExtensionLabel.Text = ""; availabilityTimer?.Stop(); RenderHistory(); RenderTeam();
             UpdatePhone(new(false, false, false, false, "Nebenstelle nicht zugewiesen", ""));
@@ -274,7 +274,7 @@ public sealed partial class MainWindow : Window
         microsoftShutdown = ForgetMicrosoftContactsAsync();
         _ = StopSipAsync();
         snapshot = new(false, false, false, false, "Nicht verbunden", "");
-        favorites.Clear();
+        favorites.Clear(); favoriteGroups.Clear();
         RenderFavoriteRows();
         favoritesStore = null;
         StopHistorySync(); activityTimer?.Stop(); availabilityTimer?.Stop(); miniCall?.AppWindow.Hide();

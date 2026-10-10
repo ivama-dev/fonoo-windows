@@ -48,9 +48,18 @@ public sealed partial class MainWindow
         RenderProfileButton();
         PreviewCallButton.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
         PreviewMiniButton.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
-        favoritesStore = new FavoritesStore(Path.Combine(AppContext.BaseDirectory, "qa", "favorites"), accountId, activeTenant);
-        foreach (var favorite in favoritesStore.Load()) favorites.Add(favorite);
-        if (!favorites.Any(f => f.Number == "101")) favorites.Add(new("preview-favorite", "Alex Beispiel", "101"));
+        favoritesStore = new FavoritesStore(Path.Combine(AppContext.BaseDirectory, "qa", "favorite-groups"), accountId, activeTenant);
+        var savedFavorites = favoritesStore.LoadLibrary();
+        foreach (var favorite in savedFavorites.Favorites) favorites.Add(favorite);
+        favoriteGroups.AddRange(savedFavorites.Groups);
+        if (favorites.Count == 0 && favoriteGroups.Count == 0)
+        {
+            favoriteGroups.AddRange([new("preview-team-group", "Mein Team"), new("preview-clients-group", "Kunden"), new("preview-empty-group", "Privat")]);
+            favorites.Add(new("team:preview-company:preview-other", "Alex Beispiel", "101", "preview-team-group"));
+            favorites.Add(new("preview-mara-favorite", "Mara Beispiel", "102", "preview-team-group"));
+            favorites.Add(new("preview-client-favorite", "Empfang", "+437200101010", "preview-clients-group"));
+            favorites.Add(new("preview-ungrouped-favorite", "Zentrale", "100"));
+        }
         NoFavorites.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
         history.Add(new(Guid.NewGuid().ToString(), "101", false, DateTimeOffset.UtcNow.AddMinutes(-25), 94, "completed"));
         history.Add(new(Guid.NewGuid().ToString(), "102", true, DateTimeOffset.UtcNow.AddHours(-1), 0, "missed"));

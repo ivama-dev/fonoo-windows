@@ -291,7 +291,7 @@ public sealed partial class MainWindow
         var id = TeamPresenceResolver.FavoriteId(activeTenant, member.Id);
         if (favorites.Any(f => f.Id == id)) { ShowNotice("Diese Person ist bereits in deinen Favoriten.", InfoBarSeverity.Informational); return; }
         var existing = favorites.FirstOrDefault(f => !f.Id.StartsWith("team:", StringComparison.Ordinal) && f.Number == member.Number);
-        var favorite = new Favorite(id, existing?.Name ?? member.Name, member.Number!);
+        var favorite = new Favorite(id, existing?.Name ?? member.Name, member.Number!, existing?.GroupId);
         if (SaveFavorites(existing is null ? favorites.Append(favorite) : favorites.Select(f => f.Id == existing.Id ? favorite : f)))
             ShowNotice("Im Favoritenverzeichnis gespeichert.", InfoBarSeverity.Success);
     }

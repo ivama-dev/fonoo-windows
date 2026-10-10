@@ -126,24 +126,66 @@
           <StackPanel Orientation="Horizontal" Spacing="10"><FontIcon Glyph="&#xE717;" FontSize="18"/><TextBlock Text="Anrufen"/></StackPanel>
          </Button>
         </StackPanel>
-        <StackPanel x:Name="FavoritesPanel" Visibility="Collapsed" Spacing="22">
-         <Button x:Name="AddFavoriteButton" Content="Favorit hinzufügen" Click="AddFavoriteClicked" HorizontalAlignment="Right"/>
+        <StackPanel x:Name="FavoritesPanel" Visibility="Collapsed" Spacing="18">
+         <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+          <Button x:Name="AddFavoriteGroupButton" Click="AddFavoriteGroupClicked" AutomationProperties.Name="Gruppe anlegen"><StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE8B7;" FontSize="16"/><TextBlock Text="Gruppe anlegen"/></StackPanel></Button>
+          <Button x:Name="AddFavoriteButton" Content="Favorit hinzufügen" Click="AddFavoriteClicked"/>
+         </StackPanel>
+         <TextBlock x:Name="FavoriteOrderHint" Text="Ziehe Gruppen und Favoriten am Griff in die gewünschte Reihenfolge. Weitere Aktionen findest du unter ···." FontSize="12" Foreground="{ThemeResource FonooMuted}" TextWrapping="Wrap"/>
          <TextBlock x:Name="NoFavorites" Text="Deine Favoriten&#x0a;Füge Kontakte hinzu, um sie hier schnell anzurufen." TextWrapping="Wrap" TextAlignment="Center" Margin="0,60,0,0" Foreground="{ThemeResource FonooMuted}"/>
-         <ListView x:Name="FavoritesGrid" SelectionMode="None" IsItemClickEnabled="True" ItemClick="FavoriteClicked" HorizontalContentAlignment="Stretch">
-          <ListView.ItemTemplate><DataTemplate>
-           <Grid Padding="4,10" ColumnSpacing="12">
-            <Grid.ContextFlyout><MenuFlyout><MenuFlyoutItem Text="Bearbeiten" Tag="{Binding Favorite}" Click="EditFavoriteClicked"/><MenuFlyoutItem Text="Entfernen" Tag="{Binding Favorite}" Click="RemoveFavoriteClicked"/></MenuFlyout></Grid.ContextFlyout>
-            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-            <Border Width="38" Height="38" CornerRadius="19" Background="#EBE5FB"><TextBlock Text="{Binding Initials}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{ThemeResource FonooPurple}" FontWeight="SemiBold"/></Border>
-            <StackPanel Grid.Column="1" Spacing="4">
-             <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/><TextBlock Text="{Binding Number}" Foreground="{ThemeResource FonooMuted}"/>
-             <StackPanel Orientation="Horizontal" Spacing="7" Visibility="{Binding Phone.Visibility}"><Ellipse Width="7" Height="7" Fill="{Binding Phone.Brush}" VerticalAlignment="Center"/><TextBlock Text="{Binding Phone.Text}" Foreground="{Binding Phone.Brush}" FontSize="12"/></StackPanel>
-             <TextBlock Text="{Binding Phone.Detail}" Visibility="{Binding Phone.DetailVisibility}" Foreground="{ThemeResource FonooMuted}" FontSize="12" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{Binding Phone.Detail}"/>
-            </StackPanel>
-            <FontIcon Grid.Column="2" Glyph="&#xE717;" FontSize="18" Foreground="{ThemeResource FonooPurple}"/>
-           </Grid>
-          </DataTemplate></ListView.ItemTemplate>
-         </ListView>
+         <ItemsControl x:Name="FavoriteSections" HorizontalContentAlignment="Stretch">
+          <ItemsControl.ItemTemplate><DataTemplate>
+           <StackPanel Spacing="4" Margin="0,0,0,18" Tag="{Binding}">
+            <Border Padding="0,4" Background="Transparent" BorderBrush="#EBE8F0" BorderThickness="0,0,0,1" Tag="{Binding}" Visibility="{Binding HeaderVisibility}">
+             <Grid ColumnSpacing="8">
+              <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+              <Thumb Grid.ColumnSpan="2" Tag="{Binding}" IsEnabled="{Binding CanDrag}" DragStarted="FavoriteGroupThumbStarted" DragDelta="FavoriteGroupThumbDelta" DragCompleted="FavoriteGroupThumbCompleted" HorizontalAlignment="Stretch" AutomationProperties.Name="{Binding Name}">
+               <Thumb.Template><ControlTemplate TargetType="Thumb"><Grid Background="Transparent" ColumnSpacing="8" Padding="0,4">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                <FontIcon Glyph="&#xE784;" FontSize="16" Foreground="{ThemeResource FonooMuted}" Visibility="{Binding ActionsVisibility}" ToolTipService.ToolTip="Gruppe ziehen, um sie zu verschieben"/>
+                <TextBlock Grid.Column="1" Text="{Binding Name}" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+               </Grid></ControlTemplate></Thumb.Template>
+              </Thumb>
+              <TextBlock Grid.Column="2" Text="{Binding Count}" FontSize="12" Foreground="{ThemeResource FonooMuted}" VerticalAlignment="Center"/>
+              <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="2" Visibility="{Binding ActionsVisibility}">
+               <Button Tag="{Binding}" Click="FavoriteGroupUpClicked" IsEnabled="{Binding CanMoveUp}" Background="Transparent" BorderThickness="0" Padding="7" ToolTipService.ToolTip="Gruppe nach oben" AutomationProperties.Name="Gruppe nach oben"><FontIcon Glyph="&#xE70E;" FontSize="12"/></Button>
+               <Button Tag="{Binding}" Click="FavoriteGroupDownClicked" IsEnabled="{Binding CanMoveDown}" Background="Transparent" BorderThickness="0" Padding="7" ToolTipService.ToolTip="Gruppe nach unten" AutomationProperties.Name="Gruppe nach unten"><FontIcon Glyph="&#xE70D;" FontSize="12"/></Button>
+               <Button Tag="{Binding}" Click="FavoriteGroupMoreClicked" Background="Transparent" BorderThickness="0" Padding="7" ToolTipService.ToolTip="Gruppe bearbeiten" AutomationProperties.Name="Gruppe bearbeiten"><FontIcon Glyph="&#xE712;" FontSize="16"/></Button>
+              </StackPanel>
+             </Grid>
+            </Border>
+            <TextBlock Text="Noch keine Favoriten – ziehe einen Kontakt auf den Gruppennamen oder wähle seine Gruppe unter ···." Visibility="{Binding EmptyVisibility}" Foreground="{ThemeResource FonooMuted}" FontSize="12" TextWrapping="Wrap" Margin="4,10"/>
+            <ListView ItemsSource="{Binding Items}" SelectionMode="None" IsItemClickEnabled="True" ItemClick="FavoriteClicked" HorizontalContentAlignment="Stretch">
+             <ListView.ItemTemplate><DataTemplate>
+              <Border Padding="4,10" Tag="{Binding Favorite}" Background="Transparent" BorderThickness="0">
+               <Border.ContextFlyout><MenuFlyout>
+                <MenuFlyoutItem Text="Bearbeiten" Tag="{Binding Favorite}" Click="EditFavoriteClicked"/>
+                <MenuFlyoutItem Text="In Gruppe verschieben …" Tag="{Binding Favorite}" Click="MoveFavoriteClicked"/>
+                <MenuFlyoutItem Text="Nach oben" Tag="{Binding Favorite}" Click="FavoriteUpClicked"/>
+                <MenuFlyoutItem Text="Nach unten" Tag="{Binding Favorite}" Click="FavoriteDownClicked"/>
+                <MenuFlyoutSeparator/><MenuFlyoutItem Text="Entfernen" Tag="{Binding Favorite}" Click="RemoveFavoriteClicked"/>
+               </MenuFlyout></Border.ContextFlyout>
+               <Grid ColumnSpacing="10">
+               <Grid.ColumnDefinitions><ColumnDefinition Width="20"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+               <Thumb Tag="{Binding Favorite}" DragStarted="FavoriteThumbStarted" DragDelta="FavoriteThumbDelta" DragCompleted="FavoriteThumbCompleted" VerticalAlignment="Center" Height="36" AutomationProperties.Name="Favorit ziehen, um ihn zu verschieben">
+                <Thumb.Template><ControlTemplate TargetType="Thumb"><Grid Background="Transparent"><FontIcon Glyph="&#xE784;" FontSize="14" Foreground="{ThemeResource FonooMuted}"/></Grid></ControlTemplate></Thumb.Template>
+               </Thumb>
+               <Border Grid.Column="1" Width="38" Height="38" CornerRadius="19" Background="#EBE5FB"><TextBlock Text="{Binding Initials}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{ThemeResource FonooPurple}" FontWeight="SemiBold"/></Border>
+               <StackPanel Grid.Column="2" Spacing="4">
+                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/><TextBlock Text="{Binding Number}" Foreground="{ThemeResource FonooMuted}"/>
+                <StackPanel Orientation="Horizontal" Spacing="7" Visibility="{Binding Phone.Visibility}"><Ellipse Width="7" Height="7" Fill="{Binding Phone.Brush}" VerticalAlignment="Center"/><TextBlock Text="{Binding Phone.Text}" Foreground="{Binding Phone.Brush}" FontSize="12"/></StackPanel>
+                <TextBlock Text="{Binding Phone.Detail}" Visibility="{Binding Phone.DetailVisibility}" Foreground="{ThemeResource FonooMuted}" FontSize="12" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{Binding Phone.Detail}"/>
+               </StackPanel>
+               <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                <FontIcon Glyph="&#xE717;" FontSize="18" Foreground="{ThemeResource FonooPurple}"/>
+                <Button Tag="{Binding Favorite}" Click="FavoriteMoreClicked" Background="Transparent" BorderThickness="0" Padding="8" ToolTipService.ToolTip="Favorit bearbeiten oder verschieben" AutomationProperties.Name="Favorit bearbeiten oder verschieben"><FontIcon Glyph="&#xE712;" FontSize="16"/></Button>
+               </StackPanel>
+              </Grid></Border>
+             </DataTemplate></ListView.ItemTemplate>
+            </ListView>
+           </StackPanel>
+          </DataTemplate></ItemsControl.ItemTemplate>
+         </ItemsControl>
         </StackPanel>
         <StackPanel x:Name="RecentsPanel" Visibility="Collapsed" Spacing="18">
          <Grid ColumnSpacing="8">

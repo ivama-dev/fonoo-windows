@@ -106,21 +106,29 @@ public sealed partial class MainWindow
 
     private void RenderFavoriteRows()
     {
-        FavoritesGrid.ItemsSource = favorites.Select(f => new FavoriteListItem(f)).ToArray();
+        favoriteRows = favorites.Select(f => new FavoriteListItem(f)).ToArray();
+        var sections = favoriteGroups.Select((g, i) => new FavoriteGroupSection(g.Id, g.Name,
+            favoriteRows.Where(f => f.Favorite.GroupId == g.Id).ToArray(), i > 0, i < favoriteGroups.Count - 1)).ToList();
+        sections.Add(new(null, "Ohne Gruppe", favoriteRows.Where(f => f.Favorite.GroupId is null).ToArray(), false, false, favoriteGroups.Count > 0));
+        FavoriteSections.ItemsSource = sections;
+        FavoriteSections.Visibility = favorites.Count > 0 || favoriteGroups.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+        AddFavoriteButton.IsEnabled = favoritesStore is not null;
+        AddFavoriteGroupButton.IsEnabled = favoritesStore is not null && favoriteGroups.Count < 50;
+        NoFavorites.Visibility = favorites.Count == 0 && favoriteGroups.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        FavoriteOrderHint.Visibility = favoriteGroups.Count > 0 || favorites.Count > 1 ? Visibility.Visible : Visibility.Collapsed;
         RenderPresence();
     }
 
     private void RenderPresence()
     {
-        if (TeamList is null || FavoritesGrid is null) return;
+        if (TeamList is null || FavoriteSections is null) return;
         var current = phonePresence?.Current;
         var allowedOutlook = previewMode || (microsoftOwner == accountId && microsoftCompany == activeTenant && microsoftPolicy is not null);
         var directory = contacts.Concat(allowedOutlook ? outlookContacts : []).ToArray();
         if (TeamList.ItemsSource is TeamListItem[] rows)
             foreach (var row in rows) row.Phone.Update(teamSnapshot?.TenantId == activeTenant && teamSnapshot.SelfUserId == accountId
                 ? TeamPresenceResolver.Display(row.Member.Id, current, teamSnapshot, directory, favorites) : PhonePresenceDisplay.Unknown);
-        if (FavoritesGrid.ItemsSource is FavoriteListItem[] saved)
-            foreach (var row in saved)
+        foreach (var row in favoriteRows)
             {
                 var member = TeamPresenceResolver.FavoriteMember(row.Favorite, teamSnapshot, activeTenant, accountId);
                 // A scoped internal favorite still shows Unknown while its directory is loading.
