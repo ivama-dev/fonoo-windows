@@ -16,6 +16,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="CallChecks.cs" />
     <Compile Include="../../Fonoo.Windows/Telephony/SipEngine*.cs" Link="%(Filename)%(Extension)" />
+    <Compile Include="../../Fonoo.Windows/Telephony/SipSnapshot.cs" Link="SipSnapshot.cs" />
     <Compile Include="../../Fonoo.Windows/Telephony/CallHistoryStore.cs" Link="CallHistoryStore.cs" />
     <Compile Include="../../Fonoo.Windows/Telephony/DialNumber.cs" Link="DialNumber.cs" />
     <Compile Include="../../Fonoo.Windows/Accounts/*.cs" Link="Accounts/%(Filename)%(Extension)" />

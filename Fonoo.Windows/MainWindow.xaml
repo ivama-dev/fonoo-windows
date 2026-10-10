@@ -13,7 +13,7 @@
     <NavigationViewItem x:Name="ConversationTab" Content="Gespräch" Tag="call" Icon="Phone" Visibility="Collapsed"/>
     <NavigationViewItem x:Name="DialpadTab" Content="Wählen" Tag="dial"><NavigationViewItem.Icon><FontIcon Glyph="&#xE80A;"/></NavigationViewItem.Icon></NavigationViewItem>
     <NavigationViewItem x:Name="FavoritesTab" Content="Favoriten" Tag="favorites" Icon="Favorite"/>
-    <NavigationViewItem Content="Anrufliste" Tag="recents" Icon="Clock"/>
+    <NavigationViewItem x:Name="RecentsTab" Content="Anrufliste" Tag="recents" Icon="Clock"/>
     <NavigationViewItem Content="Kontakte" Tag="contacts" Icon="Contact"/>
     <NavigationViewItem Content="Team" Tag="team" Icon="People"/>
     <NavigationViewItem x:Name="AccountTab" Content="Konto" Tag="account" Icon="ContactInfo"/>
@@ -105,6 +105,17 @@
          <Button Content="Status aktualisieren" Click="RefreshClicked"/>
          <HyperlinkButton Content="Kundenbereich öffnen" NavigateUri="https://dev.fonoo.app/kunden/"/>
         </StackPanel>
+        <Border BorderBrush="{ThemeResource FonooLine}" BorderThickness="1" CornerRadius="8" Padding="18">
+         <StackPanel Spacing="12">
+          <TextBlock Text="Fenster &amp; Infobereich" FontSize="18" FontWeight="SemiBold"/>
+          <ToggleSwitch x:Name="MinimizeToTraySwitch" Header="Beim Minimieren im Infobereich weiterlaufen" OnContent="Aktiv" OffContent="In der Taskleiste minimieren" Toggled="MinimizeToTrayToggled"/>
+          <TextBlock Text="Fonoo bleibt rechts unten erreichbar. Klicke auf das Symbol zum Öffnen oder mit der rechten Maustaste für Schnellaktionen. Bei einem Anruf erscheint das kleine Gesprächsfenster." TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}" FontSize="13"/>
+          <TextBlock x:Name="TrayStatusLabel" Text="Nicht angemeldet" FontWeight="SemiBold" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite"/>
+          <StackPanel Orientation="Horizontal" Spacing="8"><Button Content="Schnellmenü öffnen" Click="TrayMenuClicked" ToolTipService.ToolTip="Dasselbe Menü wie am Symbol rechts unten"/><Button Content="In den Hintergrund" Click="HideInTrayClicked"/></StackPanel>
+          <TextBlock Text="Grün: verbunden · Grau: offline · Violett: Anruf · Rot: Nicht stören · Orange: gehalten oder stumm" TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}" FontSize="12"/>
+          <TextBlock Text="Falls das Symbol verborgen ist, findest du es unter dem Pfeil rechts unten. Mit „Fonoo beenden“ schließt du die App vollständig." TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}" FontSize="12"/>
+         </StackPanel>
+        </Border>
         <Button Content="Fonoo beenden" Click="QuitClicked"/>
         <Button x:Name="SignOutButton" Content="Abmelden" Click="SignOutClicked" Visibility="Collapsed"/>
        </StackPanel>

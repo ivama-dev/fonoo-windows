@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
  <ItemGroup><Compile Include="../../Fonoo.Windows/Accounts/*.cs" Link="Accounts/%(Filename)%(Extension)"/><Compile Include="../../Fonoo.Windows/Telephony/DialNumber.cs" Link="DialNumber.cs"/><Compile Include="../../Fonoo.Windows/Telephony/CallHistoryStore.cs" Link="CallHistoryStore.cs"/><Compile Include="../../Fonoo.Windows/Telephony/ContactDirectory.cs" Link="ContactDirectory.cs"/></ItemGroup>
+ <ItemGroup><Compile Include="../../Fonoo.Windows/Telephony/SipSnapshot.cs" Link="SipSnapshot.cs"/><Compile Include="../../Fonoo.Windows/Desktop/DesktopSettingsStore.cs" Link="DesktopSettingsStore.cs"/><Compile Include="../../Fonoo.Windows/Desktop/TrayPresentation.cs" Link="TrayPresentation.cs"/><Compile Include="../../Fonoo.Windows/Desktop/StatusBadgePixels.cs" Link="StatusBadgePixels.cs"/></ItemGroup>
 </Project>

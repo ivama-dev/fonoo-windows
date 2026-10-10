@@ -14,6 +14,8 @@ Halten/Fortsetzen, direkte Weiterleitung und Rückfrage nutzen bestätigte SDK-Z
 
 Beim Minimieren oder Verbergen des Hauptfensters erscheint während eines Gesprächs das kompakte Fenster. Es bietet Annehmen/Ablehnen, Stumm, Halten, Tastenfeld, Weiterleitung, Rückkehr/Vermittlung und Auflegen. Schließen verbirgt nur das Mini-Fenster. Das native Symbol im Infobereich hält Fonoo auch bei geschlossenem Hauptfenster erreichbar und bietet Gesprächsaktionen, „Nicht stören“ und explizites Beenden. Bei fehlendem Infobereich bleibt das Hauptfenster sichtbar. Beim Beenden mit laufendem Gespräch erscheint eine Bestätigung.
 
+„Konto → Fenster & Infobereich“ bietet jetzt einen gespeicherten Modus zum Minimieren direkt in den Infobereich rechts unten. Statussymbole, Tooltips, ein erweitertes Schnellmenü und ein Status-Overlay am sichtbaren Taskleistenbutton ergänzen die vorhandene Integration. Die Einstellung ist standardmäßig aktiv; sie lässt sich zugunsten des normalen Minimierens in die Taskleiste ausschalten. Details stehen in [DESKTOP-BACKGROUND.md](DESKTOP-BACKGROUND.md).
+
 Seit 06.10.2026 nutzt die Mini-Ansicht regulär 320 × 176 logische Pixel Inhalt, mit zusätzlicher Höhe nur für Annehmen und Rückfrage-Aktionen. Sie zeigt den gleichen segmentierten Pegelbalken wie die Audioeinstellungen. Vier Symboltasten bieten Stumm, Halten, das Menü für Tastenfeld/Weiterleitung und Auflegen; Tooltips und zugängliche Namen beschreiben den jeweiligen Zustand. Rückfrage-Aktionen bleiben bei Bedarf direkt sichtbar. DPI-Anpassung und Begrenzung auf den Arbeitsbereich halten das Fenster erreichbar. Details und Prüfstand stehen in [AUDIO-INTEGRATION.md](AUDIO-INTEGRATION.md).
 
 ## Anrufliste, Kontakte und Team

@@ -1,5 +1,6 @@
 using Fonoo.Windows.Accounts;
 using Fonoo.Windows.Telephony;
+using Fonoo.Windows.Desktop;
 using System.Net;
 using System.Text.Json;
 using System.Text;
@@ -13,6 +14,44 @@ var summary = "{\"id\":\"user-A\",\"email\":\"user@example.invalid\"}";
 var folder = Path.Combine(Path.GetTempPath(), "fonoo-desktop-tests-" + Guid.NewGuid().ToString("N")); Directory.CreateDirectory(folder);
 try
 {
+    var desktopStore = new DesktopSettingsStore(folder);
+    Check(desktopStore.Load().MinimizeToTray, "Tray mode not enabled by default");
+    desktopStore.Save(new(MinimizeToTray: false));
+    Check(!new DesktopSettingsStore(folder).Load().MinimizeToTray, "Desktop mode lost after restart");
+    var desktopPath = Path.Combine(folder, "desktop-settings.json"); File.WriteAllText(desktopPath, "{\"Version\":2,\"MinimizeToTray\":true}");
+    var invalidDesktop = new DesktopSettingsStore(folder);
+    try { invalidDesktop.Load(); throw new Exception("Unsupported settings accepted"); } catch (InvalidDataException) { }
+    try { invalidDesktop.Save(new()); throw new Exception("Damaged settings overwritten"); } catch (InvalidOperationException) { }
+    Check(File.ReadAllText(desktopPath).Contains("\"Version\":2"), "Unsupported settings destroyed");
+    Check(Directory.GetFiles(folder, "*.tmp").Length == 0, "Desktop temporary files leaked");
+    Check(TrayPresentation.ShouldHideOnMinimize(true, true, true, true, false, false), "Minimized window not hidden");
+    foreach (var mode in new[] { (false,true,true,true,false,false), (true,false,true,true,false,false), (true,true,false,true,false,false),
+        (true,true,true,false,false,false), (true,true,true,true,true,false), (true,true,true,true,false,true) })
+        Check(!TrayPresentation.ShouldHideOnMinimize(mode.Item1,mode.Item2,mode.Item3,mode.Item4,mode.Item5,mode.Item6), "Unsafe hide policy");
+    var idle = new SipSnapshot(true, false, false, false, "Registriert", "");
+    Check(TrayPresentation.From(idle, "").Kind == TrayStatusKind.Ready, "Ready icon wrong");
+    Check(TrayPresentation.From(idle with { Registered = false }, "Nicht angemeldet").Status == "Nicht angemeldet", "Signed-out tray status stale");
+    Check(TrayPresentation.From(idle with { DoNotDisturb = true }, "").Kind == TrayStatusKind.DoNotDisturb, "DND badge missing");
+    var talking = idle with { InCall = true, Active = true, Peer = "Alex Beispiel", DoNotDisturb = true };
+    Check(TrayPresentation.From(talking, "").Kind == TrayStatusKind.Call, "DND hid active call");
+    Check(TrayPresentation.From(talking with { Registered = false }, "").Kind == TrayStatusKind.Call, "Registration interruption hid call");
+    Check(TrayPresentation.From(talking with { Muted = true }, "").Kind == TrayStatusKind.Muted, "Muted feedback missing");
+    Check(TrayPresentation.From(talking with { Muted = true, Held = true }, "").Kind == TrayStatusKind.Held, "Held state priority wrong");
+    Check(TrayPresentation.From(talking with { Incoming = true }, "").Kind == TrayStatusKind.Ringing, "Incoming priority wrong");
+    Check(TrayPresentation.From(talking with { Active = false }, "").Kind == TrayStatusKind.Calling, "Outgoing setup falsely shown as connected call");
+    Check(TrayPresentation.From(talking, "", "1:24").Tooltip.Contains("Alex Beispiel · 1:24"), "Call details missing");
+    var scopedTip = TrayPresentation.From(idle, "", company: "Firma & Co", extension: "Nebenstelle: 101", profile: "Büro").Tooltip;
+    Check(scopedTip.Contains("Firma & Co") && scopedTip.Contains("101") && scopedTip.Contains("Büro"), "Tray account/profile details missing");
+    var longTip = TrayPresentation.From(talking with { Peer = new string('x', 105) + "😀" }, "", "1:24").Tooltip;
+    Check(longTip.Length <= 127 && !char.IsHighSurrogate(longTip[^1]), "Tooltip truncation broke a Unicode character");
+    Check(TrayPresentation.Clean("A\r\nB\0").Equals("AB"), "Unsafe menu text retained");
+    var background = Enumerable.Repeat((byte)180, 32 * 32 * 4).ToArray(); var unchanged = background.ToArray();
+    var generated = Enum.GetValues<TrayStatusKind>().Select(k => StatusBadgePixels.Draw(k, 32)).ToArray();
+    Check(generated.Select(Convert.ToHexString).Distinct().Count() == generated.Length, "Status glyphs indistinguishable");
+    Check(generated.All(p => p[3] == 0 && p[(16 * 32 + 16) * 4 + 3] == 255), "Badge transparency wrong");
+    Check(StatusBadgePixels.Draw(TrayStatusKind.Ready, 32, background).Take(16).SequenceEqual(background.Take(16)) && background.SequenceEqual(unchanged), "Brand pixels or caller buffer changed");
+    foreach (var size in new[] { 0, 15, 65 }) { try { StatusBadgePixels.Draw(TrayStatusKind.Ready, size); throw new Exception("Invalid badge size accepted"); } catch (ArgumentException) { } }
+    Console.WriteLine("PASS: tray minimize policy, persisted settings/corruption preservation, status priority, Unicode tooltip and cached badge pixels.");
     if (!args.Contains("--skip-dpapi"))
     {
     var protectedStore = new ProtectedSessionStore(folder); var session = Session(); protectedStore.Save(session);

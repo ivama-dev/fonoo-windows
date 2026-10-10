@@ -23,28 +23,39 @@ public sealed partial class MainWindow
     private bool manualDoNotDisturb;
     private readonly double[] activityLevels = new double[5];
     private string activityCallId = "";
+    private DesktopSettings desktopSettings = new();
+    private DesktopSettingsStore? desktopSettingsStore;
+    private bool applyingDesktopSettings;
+    private bool backgroundHintShown;
+    private DispatcherQueueTimer? shellRecoveryTimer;
 
     private void InitializeDesktop()
     {
+        InitializeDesktopSettings();
         Closed += (_, _) =>
         {
             NetworkInformation.NetworkStatusChanged -= NetworkStatusChanged;
-            activityTimer?.Stop(); availabilityTimer?.Stop(); tray?.Dispose(); miniCall?.DisposeWindow();
+            activityTimer?.Stop(); availabilityTimer?.Stop(); shellRecoveryTimer?.Stop(); tray?.Dispose(); miniCall?.DisposeWindow();
         };
         if (previewMode) return;
         try
         {
-            tray = new(Path.Combine(AppContext.BaseDirectory, "Assets", "Fonoo.ico"));
+            tray = new(Path.Combine(AppContext.BaseDirectory, "Assets", "Fonoo.ico"), WinRT.Interop.WindowNative.GetWindowHandle(this));
             tray.Command += DesktopCommand;
             tray.Resumed += ScheduleRegistrationRefresh;
             tray.Unavailable += () => DispatcherQueue.TryEnqueue(() => { ShowMain(); ShowNotice("Das Symbol im Infobereich ist nicht verfügbar. Fonoo bleibt im Fenster geöffnet."); });
+            shellRecoveryTimer = DispatcherQueue.CreateTimer(); shellRecoveryTimer.Interval = TimeSpan.FromSeconds(1);
+            shellRecoveryTimer.Tick += (_, _) => { shellRecoveryTimer.Stop(); if (!closed) tray?.RefreshTaskbar(true); };
+            tray.ShellRestarted += () => shellRecoveryTimer.Start();
         }
         catch { ShowNotice("Das Symbol im Infobereich konnte nicht eingerichtet werden. Fonoo bleibt im Fenster geöffnet."); }
+        UpdateShellStatus();
+        ((FrameworkElement)Content).Loaded += (_, _) => tray?.RefreshTaskbar(true);
         AppWindow.Closing += (ownerWindow, e) =>
         {
             if (closingWithEngine) return;
             e.Cancel = true;
-            if (tray?.Available == true) { AppWindow.Hide(); ShowMiniCall(false); }
+            if (tray?.Available == true) HideInTray();
             else _ = QuitAsync();
         };
         AppWindow.Changed += (_, e) =>
@@ -52,8 +63,11 @@ public sealed partial class MainWindow
             if (e.DidPresenterChange || e.DidVisibilityChange || e.DidSizeChange)
             {
                 var minimized = AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Minimized };
+                if (TrayPresentation.ShouldHideOnMinimize(desktopSettings.MinimizeToTray, tray?.Available == true, AppWindow.IsVisible, minimized,
+                    modalOpen || audioDialogOpen || quitDialogOpen, closingWithEngine)) HideInTray();
                 if (AppWindow.IsVisible && !minimized) miniCall?.AppWindow.Hide();
                 else ShowMiniCall(false);
+                if (AppWindow.IsVisible && !minimized) tray?.RefreshTaskbar(true);
                 RefreshActivityCadence();
                 RefreshPresenceLifecycle();
             }
@@ -67,6 +81,57 @@ public sealed partial class MainWindow
         if (closed) return;
         if (AppWindow.Presenter is OverlappedPresenter presenter) presenter.Restore();
         AppWindow.Show(); Activate(); miniCall?.AppWindow.Hide();
+        tray?.RefreshTaskbar(true);
+    }
+    private void HideInTray()
+    {
+        if (tray?.Available != true || closed || closingWithEngine) return;
+        if (modalOpen || audioDialogOpen || quitDialogOpen) { ShowMain(); return; }
+        AppWindow.Hide(); ShowMiniCall(false); RefreshActivityCadence(); RefreshPresenceLifecycle();
+        if (!backgroundHintShown) { backgroundHintShown = true; tray.ShowBackgroundHint(); }
+    }
+    private void InitializeDesktopSettings()
+    {
+        try
+        {
+            var store = new DesktopSettingsStore(previewMode ? Path.Combine(AppContext.BaseDirectory, "qa", "desktop") : UserDataDirectory);
+            desktopSettings = store.Load(); desktopSettingsStore = store;
+        }
+        catch { desktopSettings = new(MinimizeToTray: false); ShowNotice("Die Fenstereinstellung konnte nicht geladen werden. Fonoo bleibt beim Minimieren in der Taskleiste.", InfoBarSeverity.Informational); }
+        applyingDesktopSettings = true;
+        MinimizeToTraySwitch.IsOn = desktopSettings.MinimizeToTray;
+        MinimizeToTraySwitch.IsEnabled = desktopSettingsStore is not null;
+        applyingDesktopSettings = false;
+        UpdateShellStatus();
+    }
+    private void HideInTrayClicked(object sender, RoutedEventArgs e)
+    {
+        if (tray?.Available == true) HideInTray();
+        else ShowNotice("Das Symbol im Infobereich ist gerade nicht verfügbar. Fonoo bleibt im Fenster erreichbar.", InfoBarSeverity.Informational);
+    }
+    private void TrayMenuClicked(object sender, RoutedEventArgs e)
+    {
+        if (tray?.Available == true) tray.ShowMenu();
+        else ShowNotice(previewMode ? "Die Designvorschau zeigt das Fensterlayout. Das echte Schnellmenü ist in der regulären App verfügbar." : "Das Symbol im Infobereich ist gerade nicht verfügbar.", InfoBarSeverity.Informational);
+    }
+    private void MinimizeToTrayToggled(object sender, RoutedEventArgs e)
+    {
+        if (applyingDesktopSettings || desktopSettingsStore is null) return;
+        var next = desktopSettings with { MinimizeToTray = MinimizeToTraySwitch.IsOn };
+        try { desktopSettingsStore.Save(next); desktopSettings = next; }
+        catch
+        {
+            applyingDesktopSettings = true; MinimizeToTraySwitch.IsOn = desktopSettings.MinimizeToTray; applyingDesktopSettings = false;
+            ShowNotice("Die Fenstereinstellung konnte nicht gespeichert werden. Die bisherige Auswahl bleibt aktiv.");
+        }
+    }
+    private void UpdateShellStatus()
+    {
+        if (closed || TrayStatusLabel is null) return;
+        var state = DisplaySnapshot;
+        var shown = TrayPresentation.From(state, Status.Text, durationText, CompanyName.Text, ExtensionLabel.Text, ProfileName.Text);
+        TrayStatusLabel.Text = shown.Status;
+        tray?.Update(state, Status.Text, durationText, CompanyName.Text, ExtensionLabel.Text, ProfileName.Text, callActionPending, engine is not null);
     }
     private void ShowMiniCall(bool explicitRequest)
     {
@@ -79,7 +144,7 @@ public sealed partial class MainWindow
     }
     private void UpdateDesktop(bool wasInCall)
     {
-        tray?.Update(DisplaySnapshot, durationText); miniCall?.Update(DisplaySnapshot, callActionPending);
+        miniCall?.Update(DisplaySnapshot, callActionPending);
         if (snapshot.CallId != activityCallId) { activityCallId = snapshot.CallId; Array.Clear(activityLevels); durationText = ""; CallDuration.Text = ""; }
         if (snapshot.InCall && !wasInCall)
         {
@@ -93,6 +158,7 @@ public sealed partial class MainWindow
             if (reconnectAfterCall) { reconnectAfterCall = false; ScheduleRegistrationRefresh(); }
             if (refreshAccountAfterCall) { refreshAccountAfterCall = false; _ = RunAsync(LoadAccountAsync); }
         }
+        UpdateShellStatus();
     }
     private void RefreshActivityCadence()
     {
@@ -114,7 +180,7 @@ public sealed partial class MainWindow
             CallDuration.Text = durationText;
             if (miniCall?.AppWindow.IsVisible == true) miniCall.SetActivity(durationText, activityLevels);
             for (var i = 0; i < 5; i++) ((Rectangle)CallWave.Children[i]).Height = 4 + 20 * activityLevels[i];
-            if ((DateTimeOffset.UtcNow - lastTrayActivity).TotalSeconds >= 1) { lastTrayActivity = DateTimeOffset.UtcNow; tray?.Update(DisplaySnapshot, durationText); }
+            if ((DateTimeOffset.UtcNow - lastTrayActivity).TotalSeconds >= 1) { lastTrayActivity = DateTimeOffset.UtcNow; UpdateShellStatus(); }
         }
         catch { /* A queued read can be cancelled by logout or shutdown. */ }
         finally { activityBusy = false; }
@@ -135,6 +201,12 @@ public sealed partial class MainWindow
             case 10: ShowMain(); DesktopNavigation.SelectedItem = ConversationTab; TransferClicked(this, new RoutedEventArgs()); break;
             case 11: await PhoneActionAsync(e => e.CompleteTransferAsync()); break;
             case 12: await PhoneActionAsync(e => e.ReturnToOriginalAsync()); break;
+            case 13: ShowMain(); DesktopNavigation.SelectedItem = FavoritesTab; break;
+            case 14: ShowMain(); DesktopNavigation.SelectedItem = RecentsTab; break;
+            case 15: ShowMain(); AudioClicked(this, new RoutedEventArgs()); break;
+            case 16: ShowMain(); ManageProfilesClicked(this, new RoutedEventArgs()); break;
+            case 17: ShowMain(); if (!snapshot.InCall) ReconnectClicked(this, new RoutedEventArgs()); break;
+            case 18: HideInTray(); break;
         }
     }
     private void NetworkStatusChanged(object sender) => DispatcherQueue.TryEnqueue(ScheduleRegistrationRefresh);

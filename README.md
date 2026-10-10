@@ -11,7 +11,7 @@ Native Windows softphone built with C#, WinUI 3 and **liblinphone SDK 5.5.24**. 
 - Shared PBX telephone presence in team/internal favorites, scoped counterpart names and a 15-second Unknown fallback.
 - Shared incoming-call device profiles: quick switch, dynamic Standard, create/edit/delete and per-user/company synchronization.
 - Audio device selection, measured microphone levels, local hearing/speaker tests and a compact call window.
-- Native notification-area integration, hide-on-close, network/resume registration refresh and one app instance.
+- Configurable minimize-to-tray, native status badges/quick actions, taskbar overlays, hide-on-close, network/resume registration refresh and one app instance.
 
 This repository contains the Windows application, tests, assets and build scripts. The Fonoo backend and Apple/Android clients are separate projects. Using Fonoo services requires an active Fonoo account, an assigned extension and company permissions. Publishing the client does not grant access to those services.
 
@@ -39,7 +39,7 @@ For a synthetic UI preview, build Debug with `-p:FonooDesignPreview=true`. The p
 
 The tests use synthetic identities, responses and audio. Desktop/Microsoft contact storage checks need a normal Windows user context for DPAPI; `./Test.ps1 -SkipDpapi` explicitly skips those checks in a restricted command sandbox. [Native SDK diagnostics](diagnostics/LinphoneProbe/README.md) additionally cover local SRTP call/transfer scenarios.
 
-See [favorite groups and local storage](FAVORITE-GROUPS.md), [device profiles](DEVICE-PROFILES.md), [audio](AUDIO-INTEGRATION.md), [desktop behavior](DESKTOP-UI-2026-10-05.md), [Outlook contacts](MICROSOFT-CONTACTS.md), [telephone presence](TEAM-PRESENCE.md) and [call history](CALL-HISTORY.md). Hardware hotplug, sleep/network recovery, high DPI/accessibility, resource budgets and signed MSIX acceptance remain release checks.
+See [background mode and shell status](DESKTOP-BACKGROUND.md), [favorite groups and local storage](FAVORITE-GROUPS.md), [device profiles](DEVICE-PROFILES.md), [audio](AUDIO-INTEGRATION.md), [desktop behavior](DESKTOP-UI-2026-10-05.md), [Outlook contacts](MICROSOFT-CONTACTS.md), [telephone presence](TEAM-PRESENCE.md) and [call history](CALL-HISTORY.md). Hardware hotplug, sleep/network recovery, high DPI/accessibility, resource budgets and signed MSIX acceptance remain release checks.
 
 ## License and releases
 

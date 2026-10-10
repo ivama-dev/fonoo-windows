@@ -12,7 +12,7 @@ public sealed partial class MainWindow
     private void InitializeNavigation()
     {
         DesktopNavigation.RegisterPropertyChangedCallback(NavigationView.IsPaneOpenProperty, (_, _) => UpdateNavigationSidebar());
-        foreach (var text in new[] { Status, CompanyName, ExtensionLabel })
+        foreach (var text in new[] { Status, CompanyName, ExtensionLabel, ProfileName })
             text.RegisterPropertyChangedCallback(TextBlock.TextProperty, (_, _) => UpdateNavigationSidebar());
         UpdateNavigationSidebar();
     }
@@ -42,6 +42,7 @@ public sealed partial class MainWindow
         var dndAction = dnd ? "Nicht stören ist aktiv · ausschalten" : "Nicht stören einschalten";
         ToolTipService.SetToolTip(DndButton, dndAction);
         AutomationProperties.SetName(DndButton, dndAction);
+        UpdateShellStatus();
     }
 
     private void DesktopNavigationChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)

@@ -196,6 +196,6 @@ public sealed partial class MainWindow
         CallPeerNumber.Text = CallPeer.Text == snapshot.Peer ? "" : snapshot.Peer;
         CallPeerNumber.Visibility = CallPeerNumber.Text.Length == 0 ? Visibility.Collapsed : Visibility.Visible;
         OriginalCallLabel.Text = "Gehalten: " + ContactName(snapshot.OriginalPeer);
-        tray?.Update(DisplaySnapshot, durationText); miniCall?.Update(DisplaySnapshot, callActionPending);
+        UpdateShellStatus(); miniCall?.Update(DisplaySnapshot, callActionPending);
     }
 }
