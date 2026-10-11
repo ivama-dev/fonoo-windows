@@ -12,6 +12,7 @@ public sealed class FavoriteGroupSection(string? id, string name, FavoriteListIt
     public bool CanMoveDown { get; } = canMoveDown;
     public bool CanDrag => Id is not null;
     public Visibility ActionsVisibility => Id is null ? Visibility.Collapsed : Visibility.Visible;
+    public Visibility EditVisibility => Id is null or "ungrouped" ? Visibility.Collapsed : Visibility.Visible;
     public Visibility HeaderVisibility => showHeader ? Visibility.Visible : Visibility.Collapsed;
     public Visibility EmptyVisibility => Items.Length == 0 ? Visibility.Visible : Visibility.Collapsed;
     public override string ToString() => Name;

@@ -190,7 +190,8 @@ public sealed partial class AccountClient : IDisposable
         if (body is not null)
         {
             // The account service requires Content-Length and does not accept chunked JSON.
-            request.Content = new ByteArrayContent(JsonSerializer.SerializeToUtf8Bytes(body, Json));
+            request.Content = new ByteArrayContent(JsonSerializer.SerializeToUtf8Bytes(body,
+                path == "cloud/favorites" ? FavoritesJson : Json));
             request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json") { CharSet = "utf-8" };
         }
         using var response = await http.SendAsync(request, ct);

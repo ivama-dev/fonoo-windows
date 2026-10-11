@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace Fonoo.Windows.Telephony;
 
-public sealed record Favorite(string Id, string Name, string Number, string? GroupId = null)
+public sealed record Favorite(string Id, string Name, string Number, string? GroupId = null, string Role = "")
 {
     public string Initials => string.Concat(Name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(p => p[0])).ToUpperInvariant();
 }
@@ -21,25 +21,26 @@ public static class FavoriteGroups
     public static FavoriteLibrary Validate(FavoriteLibrary library)
     {
         var values = library.Favorites; var groups = library.Groups;
-        if (values is null || groups is null || values.Length > 1000 || groups.Length > 50 ||
+        if (values is null || groups is null || values.Length > 500 || groups.Length > 50 ||
             groups.Any(g => g is null || string.IsNullOrWhiteSpace(g.Id) || g.Id.Length > 100 || !ValidName(g.Name)) ||
             groups.Select(g => g.Id).Distinct(StringComparer.Ordinal).Count() != groups.Length ||
             groups.Select(g => g.Name.Trim()).Distinct(StringComparer.OrdinalIgnoreCase).Count() != groups.Length ||
             values.Any(f => f is null || string.IsNullOrWhiteSpace(f.Id) || f.Id.Length > 600 || string.IsNullOrWhiteSpace(f.Name) ||
-                f.Name.Length > 160 || !DialNumber.IsValid(f.Number) ||
+                f.Name.Length > 256 || !DialNumber.IsValid(f.Number) ||
                 (f.GroupId is not null && !groups.Any(g => g.Id == f.GroupId))) ||
             values.Select(f => f.Id).Distinct(StringComparer.Ordinal).Count() != values.Length)
             throw new InvalidDataException("Invalid favorites file");
         return library;
     }
 
-    public static bool ValidName(string? name) => !string.IsNullOrWhiteSpace(name) && name.Trim().Length <= 60 && !name.Any(char.IsControl);
+    public static bool ValidName(string? name) => !string.IsNullOrWhiteSpace(name) && name.Trim().Length <= 80 && !name.Any(char.IsControl);
 
     public static FavoriteLibrary Upsert(FavoriteLibrary library, string id, string name)
     {
         Validate(library);
+        if (id == "ungrouped") throw new InvalidDataException("Die Standardgruppe kann nicht umbenannt werden.");
         if (!ValidName(name)) throw new InvalidDataException("Invalid group name");
-        var group = new FavoriteGroup(id, name.Trim());
+        var group = new FavoriteGroup(id, name.Trim().Normalize(NormalizationForm.FormC));
         return Validate(library with { Groups = library.Groups.Any(g => g.Id == id)
             ? library.Groups.Select(g => g.Id == id ? group : g).ToArray() : [.. library.Groups, group] });
     }
@@ -47,6 +48,7 @@ public static class FavoriteGroups
     public static FavoriteLibrary Delete(FavoriteLibrary library, string id)
     {
         Validate(library);
+        if (id == "ungrouped") throw new InvalidDataException("Die Standardgruppe bleibt erhalten.");
         if (!library.Groups.Any(g => g.Id == id)) throw new InvalidDataException("Unknown group");
         // Removing a group never removes its contacts.
         return library with { Groups = library.Groups.Where(g => g.Id != id).ToArray(),
@@ -66,6 +68,7 @@ public static class FavoriteGroups
 
     public static FavoriteLibrary MoveFavorite(FavoriteLibrary library, string id, string? groupId, string? targetId = null, bool after = false)
     {
+        if (groupId == "ungrouped") groupId = null;
         Validate(library);
         var moving = library.Favorites.SingleOrDefault(f => f.Id == id) ?? throw new InvalidDataException("Unknown favorite");
         if (groupId is not null && !library.Groups.Any(g => g.Id == groupId)) throw new InvalidDataException("Unknown group");

@@ -142,6 +142,7 @@
           <Button x:Name="AddFavoriteGroupButton" Click="AddFavoriteGroupClicked" AutomationProperties.Name="Gruppe anlegen"><StackPanel Orientation="Horizontal" Spacing="8"><FontIcon Glyph="&#xE8B7;" FontSize="16"/><TextBlock Text="Gruppe anlegen"/></StackPanel></Button>
           <Button x:Name="AddFavoriteButton" Content="Favorit hinzufügen" Click="AddFavoriteClicked"/>
          </StackPanel>
+         <TextBlock x:Name="FavoriteSyncStatus" Text="Favoriten gehören zu deinem fonoo-Konto." FontSize="12" Foreground="{ThemeResource FonooMuted}" TextWrapping="Wrap"/>
          <TextBlock x:Name="FavoriteOrderHint" Text="Ziehe Gruppen und Favoriten am Griff in die gewünschte Reihenfolge. Weitere Aktionen findest du unter ···." FontSize="12" Foreground="{ThemeResource FonooMuted}" TextWrapping="Wrap"/>
          <TextBlock x:Name="NoFavorites" Text="Deine Favoriten&#x0a;Füge Kontakte hinzu, um sie hier schnell anzurufen." TextWrapping="Wrap" TextAlignment="Center" Margin="0,60,0,0" Foreground="{ThemeResource FonooMuted}"/>
          <ItemsControl x:Name="FavoriteSections" HorizontalContentAlignment="Stretch">
@@ -161,7 +162,7 @@
               <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="2" Visibility="{Binding ActionsVisibility}">
                <Button Tag="{Binding}" Click="FavoriteGroupUpClicked" IsEnabled="{Binding CanMoveUp}" Background="Transparent" BorderThickness="0" Padding="7" ToolTipService.ToolTip="Gruppe nach oben" AutomationProperties.Name="Gruppe nach oben"><FontIcon Glyph="&#xE70E;" FontSize="12"/></Button>
                <Button Tag="{Binding}" Click="FavoriteGroupDownClicked" IsEnabled="{Binding CanMoveDown}" Background="Transparent" BorderThickness="0" Padding="7" ToolTipService.ToolTip="Gruppe nach unten" AutomationProperties.Name="Gruppe nach unten"><FontIcon Glyph="&#xE70D;" FontSize="12"/></Button>
-               <Button Tag="{Binding}" Click="FavoriteGroupMoreClicked" Background="Transparent" BorderThickness="0" Padding="7" ToolTipService.ToolTip="Gruppe bearbeiten" AutomationProperties.Name="Gruppe bearbeiten"><FontIcon Glyph="&#xE712;" FontSize="16"/></Button>
+               <Button Tag="{Binding}" Click="FavoriteGroupMoreClicked" Visibility="{Binding EditVisibility}" Background="Transparent" BorderThickness="0" Padding="7" ToolTipService.ToolTip="Gruppe bearbeiten" AutomationProperties.Name="Gruppe bearbeiten"><FontIcon Glyph="&#xE712;" FontSize="16"/></Button>
               </StackPanel>
              </Grid>
             </Border>

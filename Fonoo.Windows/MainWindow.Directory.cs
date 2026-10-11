@@ -29,6 +29,7 @@ public sealed partial class MainWindow
     private void InitializeDirectory()
     {
         InitializePresence();
+        InitializeFavoriteSync();
         try { windowsContactCapability = AppCapability.Create("contacts"); windowsContactCapability.AccessChanged += WindowsContactAccessChanged; }
         catch { /* Unsupported capability queries never request additional permissions. */ }
         Closed += (_, _) => { if (windowsContactCapability is not null) windowsContactCapability.AccessChanged -= WindowsContactAccessChanged; };

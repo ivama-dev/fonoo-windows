@@ -66,7 +66,7 @@ try
     }
     Reject(() => FavoriteGroups.Upsert(library, "duplicate", " kollegen "));
     Reject(() => FavoriteGroups.Upsert(library, "bad", "\r\n"));
-    Reject(() => FavoriteGroups.Upsert(library, "bad", new('x', 61)));
+    Reject(() => FavoriteGroups.Upsert(library, "bad", new('x', 81)));
     Reject(() => FavoriteGroups.MoveGroup(library, "missing", "team"));
     Reject(() => FavoriteGroups.MoveFavorite(library, "one", "missing"));
     Reject(() => FavoriteGroups.MoveFavorite(library, "missing", "team"));

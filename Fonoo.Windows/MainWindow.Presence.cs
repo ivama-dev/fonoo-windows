@@ -108,8 +108,9 @@ public sealed partial class MainWindow
     {
         favoriteRows = favorites.Select(f => new FavoriteListItem(f)).ToArray();
         var sections = favoriteGroups.Select((g, i) => new FavoriteGroupSection(g.Id, g.Name,
-            favoriteRows.Where(f => f.Favorite.GroupId == g.Id).ToArray(), i > 0, i < favoriteGroups.Count - 1)).ToList();
-        sections.Add(new(null, "Ohne Gruppe", favoriteRows.Where(f => f.Favorite.GroupId is null).ToArray(), false, false, favoriteGroups.Count > 0));
+            favoriteRows.Where(f => f.Favorite.GroupId == g.Id || (g.Id == CloudFavoriteLibrary.GeneralId && f.Favorite.GroupId is null)).ToArray(), i > 0, i < favoriteGroups.Count - 1)).ToList();
+        if (!favoriteGroups.Any(g => g.Id == CloudFavoriteLibrary.GeneralId))
+            sections.Add(new(null, "Allgemein", favoriteRows.Where(f => f.Favorite.GroupId is null).ToArray(), false, false, favoriteGroups.Count > 0));
         FavoriteSections.ItemsSource = sections;
         FavoriteSections.Visibility = favorites.Count > 0 || favoriteGroups.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
         AddFavoriteButton.IsEnabled = favoritesStore is not null;

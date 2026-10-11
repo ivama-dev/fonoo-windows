@@ -24,6 +24,7 @@ public sealed partial class MainWindow
 
     private void LoadFavorites(string tenantId)
     {
+        StopFavoriteSync();
         favorites.Clear(); favoriteGroups.Clear(); favoritesStore = null;
         try
         {
@@ -31,8 +32,9 @@ public sealed partial class MainWindow
             var library = store.LoadLibrary();
             foreach (var favorite in library.Favorites) favorites.Add(favorite);
             favoriteGroups.AddRange(library.Groups); favoritesStore = store;
+            if (!previewMode) StartFavoriteSync(library, tenantId);
         }
-        catch { ShowNotice("Favoriten konnten nicht geladen werden. Die gespeicherte Datei bleibt unverändert."); }
+        catch { StopFavoriteSync(); favoritesStore = null; ShowNotice("Favoriten konnten nicht geladen werden. Die gespeicherte Datei bleibt unverändert."); }
         RenderFavoriteRows(); UpdateContactFavorites();
     }
 
@@ -42,6 +44,14 @@ public sealed partial class MainWindow
         try
         {
             if (favoritesStore is null) throw new InvalidOperationException();
+            if (cloudFavorites is { } cache)
+            {
+                var next = FavoriteCloudBridge.ToCloud(library, accountId, activeTenant)
+                    .Merge(cache.State.Library, presentedFavorites);
+                if (!next.Same(cache.State.Library)) cache.Save(cache.State.Edit(next));
+                ApplyCloudFavorites(); FavoriteSyncStatus.Text = "Lokal gespeichert · automatischer Abgleich ausstehend";
+                _ = SyncFavoritesAsync(); return true;
+            }
             favoritesStore.SaveLibrary(library);
             favorites.Clear(); foreach (var favorite in library.Favorites) favorites.Add(favorite);
             favoriteGroups.Clear(); favoriteGroups.AddRange(library.Groups);
@@ -54,9 +64,9 @@ public sealed partial class MainWindow
     private ComboBox FavoriteGroupPicker(string? selected)
     {
         var picker = new ComboBox { Header = "Gruppe", HorizontalAlignment = HorizontalAlignment.Stretch };
-        picker.Items.Add(new ComboBoxItem { Content = "Ohne Gruppe", Tag = "" });
-        foreach (var group in favoriteGroups) picker.Items.Add(new ComboBoxItem { Content = group.Name, Tag = group.Id });
-        picker.SelectedIndex = selected is null ? 0 : favoriteGroups.FindIndex(g => g.Id == selected) + 1;
+        picker.Items.Add(new ComboBoxItem { Content = "Allgemein", Tag = "" });
+        foreach (var group in favoriteGroups.Where(g => g.Id != CloudFavoriteLibrary.GeneralId)) picker.Items.Add(new ComboBoxItem { Content = group.Name, Tag = group.Id });
+        picker.SelectedItem = picker.Items.OfType<ComboBoxItem>().FirstOrDefault(i => (string)i.Tag == (selected ?? ""));
         return picker;
     }
     private static string? PickedGroup(ComboBox picker) => picker.SelectedItem is ComboBoxItem { Tag: string id } && id.Length > 0 ? id : null;
@@ -68,7 +78,7 @@ public sealed partial class MainWindow
         modalOpen = true;
         try
         {
-            var name = new TextBox { Header = "Name", MaxLength = 160, Text = existing?.Name ?? "" };
+            var name = new TextBox { Header = "Name", MaxLength = 256, Text = existing?.Name ?? "" };
             var number = new TextBox { Header = "Rufnummer", MaxLength = 64, Text = existing?.Number ?? Number.Text.Trim() };
             var group = FavoriteGroupPicker(existing?.GroupId);
             var error = new TextBlock { TextWrapping = TextWrapping.Wrap };
@@ -85,7 +95,7 @@ public sealed partial class MainWindow
                 DialNumber.Normalize(number.Text) is { } normalized)
             {
                 var id = existing is not null && existing.Number == normalized ? existing.Id : Guid.NewGuid().ToString();
-                var value = new Favorite(id, name.Text.Trim(), normalized, PickedGroup(group));
+                var value = new Favorite(id, name.Text.Trim(), normalized, PickedGroup(group), existing?.Role ?? "");
                 SaveFavorites(existing is null ? favorites.Append(value) : favorites.Select(f => f.Id == existing.Id ? value : f));
             }
         }
@@ -103,11 +113,11 @@ public sealed partial class MainWindow
     private async void AddFavoriteGroupClicked(object sender, RoutedEventArgs e) => await EditFavoriteGroupAsync(null);
     private async Task EditFavoriteGroupAsync(FavoriteGroup? existing)
     {
-        if (modalOpen || audioDialogOpen || favoritesStore is null) return;
+        if (modalOpen || audioDialogOpen || favoritesStore is null || existing?.Id == CloudFavoriteLibrary.GeneralId) return;
         var store = favoritesStore; modalOpen = true;
         try
         {
-            var name = new TextBox { Header = "Gruppenname", MaxLength = 60, Text = existing?.Name ?? "", MinWidth = 280 };
+            var name = new TextBox { Header = "Gruppenname", MaxLength = 80, Text = existing?.Name ?? "", MinWidth = 280 };
             var error = new TextBlock { TextWrapping = TextWrapping.Wrap };
             var form = new StackPanel { Spacing = 12 }; form.Children.Add(name); form.Children.Add(error);
             var dialog = new ContentDialog { XamlRoot = ((FrameworkElement)Content).XamlRoot, RequestedTheme = ElementTheme.Light,
@@ -115,7 +125,7 @@ public sealed partial class MainWindow
             dialog.PrimaryButtonClick += (_, args) =>
             {
                 if (!FavoriteGroups.ValidName(name.Text) || favoriteGroups.Any(g => g.Id != existing?.Id && string.Equals(g.Name.Trim(), name.Text.Trim(), StringComparison.OrdinalIgnoreCase)))
-                { args.Cancel = true; error.Text = "Bitte wähle einen eindeutigen Namen mit 1 bis 60 Zeichen."; }
+                { args.Cancel = true; error.Text = "Bitte wähle einen eindeutigen Namen mit 1 bis 80 Zeichen."; }
                 else if (existing is null && favoriteGroups.Count >= 50)
                 { args.Cancel = true; error.Text = "Du kannst bis zu 50 Gruppen anlegen."; }
             };
@@ -132,7 +142,7 @@ public sealed partial class MainWindow
         try
         {
             var dialog = new ContentDialog { XamlRoot = ((FrameworkElement)Content).XamlRoot, RequestedTheme = ElementTheme.Light,
-                Title = "Gruppe entfernen?", Content = $"„{group.Name}“ wird entfernt. Die enthaltenen Favoriten bleiben unter „Ohne Gruppe“ erhalten.",
+                Title = "Gruppe entfernen?", Content = $"„{group.Name}“ wird entfernt. Die enthaltenen Favoriten bleiben unter „Allgemein“ erhalten.",
                 PrimaryButtonText = "Gruppe entfernen", CloseButtonText = "Abbrechen", DefaultButton = ContentDialogButton.Close };
             if (await dialog.ShowAsync() == ContentDialogResult.Primary && ReferenceEquals(store, favoritesStore))
                 SaveFavoriteLibrary(FavoriteGroups.Delete(FavoriteLibrarySnapshot(), group.Id));
@@ -143,6 +153,7 @@ public sealed partial class MainWindow
     private void FavoriteGroupMoreClicked(object sender, RoutedEventArgs e)
     {
         if (sender is not Button { Tag: FavoriteGroupSection { Id: { } id } } button || favoriteGroups.FirstOrDefault(g => g.Id == id) is not { } group) return;
+        if (id == CloudFavoriteLibrary.GeneralId) return;
         var menu = new MenuFlyout();
         var rename = new MenuFlyoutItem { Text = "Umbenennen", Icon = new SymbolIcon(Symbol.Edit) };
         rename.Click += async (_, _) => await EditFavoriteGroupAsync(group);

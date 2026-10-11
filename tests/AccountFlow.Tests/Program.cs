@@ -1,4 +1,5 @@
 using Fonoo.Windows.Accounts;
+using Fonoo.Windows.Telephony;
 using System.Net;
 using System.Text.Json;
 
@@ -25,6 +26,28 @@ Check(client.SignedIn, "Verify must establish session");
 handler.Add("account/me", "{\"id\":\"user-1\",\"email\":\"user@example.test\"}", request =>
     Check(request.Headers.Authorization?.ToString() == "Bearer test-session", "Authenticated request missing token"));
 Check((await client.GetAccountAsync(default)).Id == "user-1", "Account failed");
+var favoriteLibrary = new CloudFavoriteLibrary([new("ungrouped", "Allgemein", [new("peer-1", "Büro München", "Arbeit", "+43500101")])]);
+var snapshot = new CloudFavoriteSnapshot(1, "user-1", 4, favoriteLibrary);
+handler.Add("cloud/favorites", JsonSerializer.Serialize(snapshot), request =>
+{
+    Check(request.Method == HttpMethod.Get && request.Content is null, "Favorites read must use GET");
+    Check(request.Headers.Authorization?.ToString() == "Bearer test-session", "Personal favorites require authentication");
+});
+Check((await client.ReadFavoritesAsync(default)).Validate("user-1").Library.Same(favoriteLibrary), "Favorites snapshot decode failed");
+handler.Add("cloud/favorites", JsonSerializer.Serialize(snapshot), request =>
+{
+    var body = request.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+    using var data = JsonDocument.Parse(body);
+    Check(data.RootElement.GetProperty("expected_revision").GetInt64() == 3, "Favorites CAS missing");
+    Check(!body.Contains("tenant_id") && !body.Contains("user_id"), "Client must not select another favorites owner");
+    Check(body.Contains("Büro München"), "Transport must preserve compact UTF-8 budget");
+});
+Check((await client.WriteFavoritesAsync(3, favoriteLibrary, default)).Library.Same(favoriteLibrary), "Favorites write failed");
+handler.Add("cloud/favorites", "{}", status: HttpStatusCode.Conflict);
+try { await client.WriteFavoritesAsync(3, favoriteLibrary, default); throw new Exception("Missing CAS conflict"); }
+catch (FavoriteSyncConflict) { }
+Check(client.SignedIn, "Revision conflict must not expire the account");
+Console.WriteLine("PASS: authenticated personal favorites wire format, UTF-8 and CAS conflict transport.");
 handler.Add("cloud/me", "{\"tenants\":[{\"id\":\"company-1\",\"name\":\"Firma\",\"extension\":\"101\",\"trial\":{\"expired\":false}}]}");
 var membership = (await client.GetMembershipsAsync(default)).Single();
 Check(membership.CanProvision && membership.Extension == "101", "Membership decode failed");

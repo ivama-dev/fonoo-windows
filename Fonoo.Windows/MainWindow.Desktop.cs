@@ -246,7 +246,7 @@ public sealed partial class MainWindow
             }
             finally { quitDialogOpen = false; }
         }
-        closingWithEngine = true; StopPresence(); StopHistorySync(); operation?.Cancel(); Actions.IsEnabled = false; activityTimer?.Stop(); availabilityTimer?.Stop();
+        closingWithEngine = true; StopPresence(); StopFavoriteSync(); StopHistorySync(); operation?.Cancel(); Actions.IsEnabled = false; activityTimer?.Stop(); availabilityTimer?.Stop();
         try { await StopSipAsync().WaitAsync(TimeSpan.FromSeconds(10)); } catch { }
         Close();
     }
