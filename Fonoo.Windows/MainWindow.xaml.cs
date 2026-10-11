@@ -26,7 +26,7 @@ public sealed partial class MainWindow : Window
         InitializeDirectory();
         InitializeNavigation();
         DesktopNavigation.SelectedItem = DialpadTab;
-        AppWindow.Resize(new SizeInt32(980, 760));
+        AppWindow.Resize(new SizeInt32(820, 660));
         Closed += (_, _) => { StopPresence(); StopHistorySync(); StopMicrophoneMeter(); StopSpeakerTest(); closed = true; operation?.Cancel(); _ = StopSipAsync(); configuration?.ClearSecrets(); account.Dispose(); };
 #if FONOO_DESIGN_PREVIEW
         Title = "Fonoo · Designvorschau";
