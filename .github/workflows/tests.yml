@@ -21,3 +21,11 @@ jobs:
       - name: Run unit checks
         shell: pwsh
         run: ./Test.ps1
+      - name: Compile native Windows application
+        shell: pwsh
+        run: |
+          $vswhere = "${env:ProgramFiles(x86)}/Microsoft Visual Studio/Installer/vswhere.exe"
+          $msbuild = & $vswhere -latest -products '*' -requires Microsoft.Component.MSBuild -find 'MSBuild/Current/Bin/amd64/MSBuild.exe' | Select-Object -First 1
+          if (-not $msbuild) { throw 'Visual Studio MSBuild missing' }
+          & $msbuild Fonoo.Windows/Fonoo.Windows.csproj /restore /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=false /p:AppxPackageSigningEnabled=false /v:minimal /nologo
+          if ($LASTEXITCODE -ne 0) { throw 'Windows build failed' }

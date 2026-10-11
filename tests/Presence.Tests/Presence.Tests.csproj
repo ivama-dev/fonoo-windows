@@ -8,4 +8,5 @@
   <Compile Include="../../Fonoo.Windows/Telephony/DialNumber.cs" Link="DialNumber.cs"/>
   <Compile Include="../../Fonoo.Windows/Telephony/TeamPresence.cs" Link="TeamPresence.cs"/>
  </ItemGroup>
+ <ItemGroup><Compile Include="../../Fonoo.Windows/Telephony/CloudFavorites.cs" Link="CloudFavorites.cs"/></ItemGroup>
 </Project>

@@ -27,7 +27,7 @@ public sealed partial class MainWindow : Window
         InitializeNavigation();
         DesktopNavigation.SelectedItem = DialpadTab;
         AppWindow.Resize(new SizeInt32(980, 760));
-        Closed += (_, _) => { StopPresence(); StopHistorySync(); StopMicrophoneMeter(); StopSpeakerTest(); closed = true; operation?.Cancel(); _ = StopSipAsync(); configuration?.ClearSecrets(); account.Dispose(); };
+        Closed += (_, _) => { StopPresence(); StopFavoriteSync(); StopHistorySync(); StopMicrophoneMeter(); StopSpeakerTest(); closed = true; operation?.Cancel(); _ = StopSipAsync(); configuration?.ClearSecrets(); account.Dispose(); };
 #if FONOO_DESIGN_PREVIEW
         Title = "Fonoo · Designvorschau";
         LoginPanel.Visibility = Visibility.Collapsed;
@@ -198,7 +198,7 @@ public sealed partial class MainWindow : Window
         {
             await StopSipAsync(); ct.ThrowIfCancellationRequested();
             microsoftShutdown = ForgetMicrosoftContactsAsync(); await microsoftShutdown;
-            StopPresence(); StopHistorySync(); configuration.ClearSecrets(); configuration = null; activeTenant = "";
+            StopPresence(); StopFavoriteSync(); StopHistorySync(); configuration.ClearSecrets(); configuration = null; activeTenant = "";
             favorites.Clear(); favoriteGroups.Clear(); favoritesStore = null; history.Clear(); historyStore = null; teamSnapshot = null; availability = null;
             RenderFavoriteRows();
             CompanyName.Text = ExtensionLabel.Text = ""; availabilityTimer?.Stop(); RenderHistory(); RenderTeam();
@@ -277,7 +277,7 @@ public sealed partial class MainWindow : Window
         favorites.Clear(); favoriteGroups.Clear();
         RenderFavoriteRows();
         favoritesStore = null;
-        StopHistorySync(); activityTimer?.Stop(); availabilityTimer?.Stop(); miniCall?.AppWindow.Hide();
+        StopFavoriteSync(); StopHistorySync(); activityTimer?.Stop(); availabilityTimer?.Stop(); miniCall?.AppWindow.Hide();
         history.Clear(); historyStore = null; contacts = []; teamSnapshot = null; availability = null;
         windowsContactIds.Clear();
         activeTenant = ""; choosingCompany = false; refreshAccountAfterCall = false; RenderHistory(); RenderContacts();
