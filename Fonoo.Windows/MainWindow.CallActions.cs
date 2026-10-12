@@ -36,7 +36,7 @@ public sealed partial class MainWindow
         }
         previewMiniTimer.Start();
         ShowMiniCall(true);
-        if (miniCall is not null) miniCall.Title = "Fonu · Mini-Designvorschau";
+        if (miniCall is not null) miniCall.Title = "fonu · Mini-Designvorschau";
 #endif
     }
 #if FONOO_DESIGN_PREVIEW

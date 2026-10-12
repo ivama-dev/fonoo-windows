@@ -29,10 +29,10 @@ public sealed partial class MainWindow : Window
         AppWindow.Resize(new SizeInt32(900, 740));
         Closed += (_, _) => { StopPresence(); StopHistorySync(); StopMicrophoneMeter(); StopSpeakerTest(); closed = true; operation?.Cancel(); _ = StopSipAsync(); configuration?.ClearSecrets(); account.Dispose(); };
 #if FONOO_DESIGN_PREVIEW
-        Title = "Fonu · Designvorschau";
+        Title = "fonu · Designvorschau";
         LoginPanel.Visibility = Visibility.Collapsed;
         PhonePanel.Visibility = Visibility.Visible;
-        CompanyName.Text = "Fonu für Windows";
+        CompanyName.Text = "fonu für Windows";
         ExtensionLabel.Text = "Wählpad";
         ReconnectButton.Visibility = Visibility.Collapsed;
         AddFavoriteButton.IsEnabled = false;
@@ -184,7 +184,7 @@ public sealed partial class MainWindow : Window
         SetupDescription.Text = memberships.Length switch
         {
             0 => "Deinem Konto ist noch keine Firma zugewiesen. Bitte wende dich an deinen Administrator und aktualisiere anschließend die Zuweisung.",
-            1 => "Deine Nebenstelle wird automatisch aus deinem Fonu-Konto übernommen.",
+            1 => "Deine Nebenstelle wird automatisch aus deinem fonu-Konto übernommen.",
             _ => "Wähle die Firma, mit deren Nebenstelle du telefonieren möchtest."
         };
         if (configuration is not null && memberships.Any(m => m.Id == activeTenant && m.CanProvision))

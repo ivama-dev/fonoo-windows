@@ -13,7 +13,7 @@ Windows verwendet denselben Vertrag wie die Mac-App: `POST cloud/availability/re
 
 `POST cloud/availability/user` schreibt ausschließlich die geänderten Profilfelder mit `tenant_id` und `expected_revision`. Ein Wechsel schreibt nur `active_profile_id`. Bearbeiten und Löschen schreiben die vollständige Profilliste und die aktive ID gemeinsam. Status, Zeitpläne und frühere Arbeitsmodi werden dabei nicht überschrieben. Konflikte verlangen ein bewusstes Neuladen; Windows wiederholt sie nicht mit einer neuen Revision. Nach dem Schreiben liest Windows den bestätigten Stand erneut.
 
-Die bestehende Verfügbarkeitsabfrage übernimmt Änderungen anderer Fonu-Apps alle 15 Sekunden. Vor dem Öffnen des Profilmenüs und der Verwaltung wird zusätzlich aktualisiert. Abmeldung, Firmenwechsel und Beenden brechen Anfragen des alten Kontextes ab; ältere Revisionen überschreiben keinen neueren Stand. Profilanfragen blockieren weder den SIP-Worker noch die Gesprächssteuerung.
+Die bestehende Verfügbarkeitsabfrage übernimmt Änderungen anderer fonu-Apps alle 15 Sekunden. Vor dem Öffnen des Profilmenüs und der Verwaltung wird zusätzlich aktualisiert. Abmeldung, Firmenwechsel und Beenden brechen Anfragen des alten Kontextes ab; ältere Revisionen überschreiben keinen neueren Stand. Profilanfragen blockieren weder den SIP-Worker noch die Gesprächssteuerung.
 
 Die PBX entscheidet anhand des aktiven Profils, welche Geräte für **neue eingehende Anrufe** klingeln. Profilwechsel legen laufende Gespräche nicht auf und erfordern keine erneute SIP-Registrierung. Profile sind unabhängig von der Freigabe der erweiterten Status-/Zeitplan-/Rufteam-Steuerung. Sie werden serverseitig pro Benutzer und Firma gespeichert; Windows erstellt dafür keine zusätzliche dauerhafte lokale Profildatei.
 

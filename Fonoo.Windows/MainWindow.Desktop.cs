@@ -43,12 +43,12 @@ public sealed partial class MainWindow
             tray = new(Path.Combine(AppContext.BaseDirectory, "Assets", "Fonoo.ico"), WinRT.Interop.WindowNative.GetWindowHandle(this));
             tray.Command += DesktopCommand;
             tray.Resumed += ScheduleRegistrationRefresh;
-            tray.Unavailable += () => DispatcherQueue.TryEnqueue(() => { ShowMain(); ShowNotice("Das Symbol im Infobereich ist nicht verfügbar. Fonu bleibt im Fenster geöffnet."); });
+            tray.Unavailable += () => DispatcherQueue.TryEnqueue(() => { ShowMain(); ShowNotice("Das Symbol im Infobereich ist nicht verfügbar. fonu bleibt im Fenster geöffnet."); });
             shellRecoveryTimer = DispatcherQueue.CreateTimer(); shellRecoveryTimer.Interval = TimeSpan.FromSeconds(1);
             shellRecoveryTimer.Tick += (_, _) => { shellRecoveryTimer.Stop(); if (!closed) tray?.RefreshTaskbar(true); };
             tray.ShellRestarted += () => shellRecoveryTimer.Start();
         }
-        catch { ShowNotice("Das Symbol im Infobereich konnte nicht eingerichtet werden. Fonu bleibt im Fenster geöffnet."); }
+        catch { ShowNotice("Das Symbol im Infobereich konnte nicht eingerichtet werden. fonu bleibt im Fenster geöffnet."); }
         UpdateShellStatus();
         ((FrameworkElement)Content).Loaded += (_, _) => tray?.RefreshTaskbar(true);
         AppWindow.Closing += (ownerWindow, e) =>
@@ -97,7 +97,7 @@ public sealed partial class MainWindow
             var store = new DesktopSettingsStore(previewMode ? Path.Combine(AppContext.BaseDirectory, "qa", "desktop") : UserDataDirectory);
             desktopSettings = store.Load(); desktopSettingsStore = store;
         }
-        catch { desktopSettings = new(MinimizeToTray: false); ShowNotice("Die Fenstereinstellung konnte nicht geladen werden. Fonu bleibt beim Minimieren in der Taskleiste.", InfoBarSeverity.Informational); }
+        catch { desktopSettings = new(MinimizeToTray: false); ShowNotice("Die Fenstereinstellung konnte nicht geladen werden. fonu bleibt beim Minimieren in der Taskleiste.", InfoBarSeverity.Informational); }
         applyingDesktopSettings = true;
         MinimizeToTraySwitch.IsOn = desktopSettings.MinimizeToTray;
         MinimizeToTraySwitch.IsEnabled = desktopSettingsStore is not null;
@@ -107,7 +107,7 @@ public sealed partial class MainWindow
     private void HideInTrayClicked(object sender, RoutedEventArgs e)
     {
         if (tray?.Available == true) HideInTray();
-        else ShowNotice("Das Symbol im Infobereich ist gerade nicht verfügbar. Fonu bleibt im Fenster erreichbar.", InfoBarSeverity.Informational);
+        else ShowNotice("Das Symbol im Infobereich ist gerade nicht verfügbar. fonu bleibt im Fenster erreichbar.", InfoBarSeverity.Informational);
     }
     private void TrayMenuClicked(object sender, RoutedEventArgs e)
     {
@@ -240,7 +240,7 @@ public sealed partial class MainWindow
             quitDialogOpen = true; ShowMain();
             try
             {
-                var dialog = new ContentDialog { XamlRoot = ((FrameworkElement)Content).XamlRoot, RequestedTheme = ElementTheme.Light, Title = "Gespräch beenden und Fonu schließen?",
+                var dialog = new ContentDialog { XamlRoot = ((FrameworkElement)Content).XamlRoot, RequestedTheme = ElementTheme.Light, Title = "Gespräch beenden und fonu schließen?",
                     Content = "Dein laufendes Gespräch wird beendet. Danach bist du auf diesem PC nicht mehr erreichbar.", PrimaryButtonText = "Beenden", CloseButtonText = "Weiter telefonieren" };
                 if (await dialog.ShowAsync() != ContentDialogResult.Primary) return;
             }

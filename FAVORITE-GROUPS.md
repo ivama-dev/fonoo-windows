@@ -8,7 +8,7 @@ Outlook, Windows/vCard and team favorites share this organization. Newly starred
 
 ## Storage and migration
 
-Favorites and groups are saved together as one versioned JSON document in `%LOCALAPPDATA%\Fonoo\Windows\favorites-<SHA256>.json`. The hash combines Fonu user ID and company ID. Separate users/companies have separate libraries. `Version: 1` contains `Favorites` (each with optional `GroupId`) and `Groups` (ordered stable IDs and names). Array order defines group order and order within each group's favorites.
+Favorites and groups are saved together as one versioned JSON document in `%LOCALAPPDATA%\Fonoo\Windows\favorites-<SHA256>.json`. The hash combines fonu user ID and company ID. Separate users/companies have separate libraries. `Version: 1` contains `Favorites` (each with optional `GroupId`) and `Groups` (ordered stable IDs and names). Array order defines group order and order within each group's favorites.
 
 Existing array-only files load without modification and retain their favorite IDs, names, numbers and order. On the next successful edit the app writes the versioned document. Writes validate the entire library, write a temporary file in the same directory and atomically replace the destination. An invalid file, unknown version or missing group reference is preserved and left read-only; the app reports the load failure. A failed write keeps the previous in-memory library. Group dialogs and pointer drags are tied to the currently loaded user/company library.
 

@@ -1,4 +1,4 @@
-<Window x:Class="Fonoo.Windows.MiniCallWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:desktop="using:Fonoo.Windows.Desktop" Title="Fonu · Gespräch">
+<Window x:Class="Fonoo.Windows.MiniCallWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:desktop="using:Fonoo.Windows.Desktop" Title="fonu · Gespräch">
  <Grid x:Name="Root" RequestedTheme="Light" Background="{ThemeResource FonooSurface}" Padding="14" RowSpacing="10">
   <Grid.Resources>
    <Style x:Key="MiniButton" TargetType="Button">
@@ -16,7 +16,7 @@
     <TextBlock x:Name="State" FontSize="11" Foreground="{ThemeResource FonooMuted}" TextTrimming="CharacterEllipsis"/>
    </StackPanel>
    <TextBlock x:Name="Duration" Grid.Column="1" FontSize="13" VerticalAlignment="Top" Margin="0,2,0,0" Foreground="{ThemeResource FonooPurple}" FontWeight="SemiBold"/>
-   <Button Grid.Column="2" Click="OpenClicked" Width="26" Height="26" Padding="4" VerticalAlignment="Top" AutomationProperties.Name="Gespräch in Fonu öffnen" ToolTipService.ToolTip="Gespräch in Fonu öffnen">
+   <Button Grid.Column="2" Click="OpenClicked" Width="26" Height="26" Padding="4" VerticalAlignment="Top" AutomationProperties.Name="Gespräch in fonu öffnen" ToolTipService.ToolTip="Gespräch in fonu öffnen">
     <FontIcon Glyph="&#xE8A7;" FontSize="13"/>
    </Button>
   </Grid>
@@ -38,7 +38,7 @@
       <MenuFlyoutItem x:Name="Keypad" Text="Tastenfeld" Click="KeypadClicked"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE80A;"/></MenuFlyoutItem.Icon></MenuFlyoutItem>
       <MenuFlyoutItem x:Name="Transfer" Text="Weiterleiten / Rückfrage" Click="TransferClicked"><MenuFlyoutItem.Icon><FontIcon Glyph="&#xE8F2;"/></MenuFlyoutItem.Icon></MenuFlyoutItem>
       <MenuFlyoutSeparator/>
-      <MenuFlyoutItem Text="Gespräch in Fonu öffnen" Click="OpenClicked"/>
+      <MenuFlyoutItem Text="Gespräch in fonu öffnen" Click="OpenClicked"/>
      </MenuFlyout>
     </Button.Flyout>
    </Button>

@@ -1,4 +1,4 @@
-# Convert the unchanged Fonu artwork to Windows PNG and multi-resolution ICO assets.
+# Convert the unchanged fonu artwork to Windows PNG and multi-resolution ICO assets.
 # Source: macOS reference f3df743, macos/FonooMac/Assets.xcassets/AppIcon.appiconset/Fonoo.png.
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Drawing

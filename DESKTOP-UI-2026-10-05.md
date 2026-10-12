@@ -1,6 +1,6 @@
 # Desktop-Oberfläche
 
-Die Oberfläche orientiert sich am Fonu-Desktop-Design und verwendet native WinUI-Kontrollen.
+Die Oberfläche orientiert sich am fonu-Desktop-Design und verwendet native WinUI-Kontrollen.
 
 Die Windows-App übernimmt die linke Navigation mit 220 Pixeln Breite, den zentrierten Wählbereich, rechteckige Zifferntasten, den breiten Anrufbutton, Favoriten als Liste und die getrennte Gesprächsansicht. Das Desktop-Violett ist #6E4AD9. WinUI-Systemkontrollen bleiben erhalten. Das Fenster startet mit 980 × 760 Pixeln, Inhalte bleiben scrollbar. Anmeldung per Passwort nutzt dieselbe Formularbreite wie die E-Mail-/Code-Anmeldung.
 
@@ -12,7 +12,7 @@ Ein neues Gespräch öffnet die Gesprächsansicht. Währenddessen kann das Taste
 
 Halten/Fortsetzen, direkte Weiterleitung und Rückfrage nutzen bestätigte SDK-Zustände. Die Rückfrage beginnt erst nach bestätigtem Halten des ursprünglichen Gesprächs. „Gespräche verbinden“ vermittelt beide Gesprächspartner; „Zurück zum Gespräch“ beendet die Rückfrage und setzt das ursprüngliche Gespräch fort. Eine abgelehnte Weiterleitung stellt dessen Bedienung wieder her. Beide Gesprächsfenster nutzen denselben Controller, Zeitstempel und dieselben gemessenen Aktivitätswerte.
 
-Beim Minimieren oder Verbergen des Hauptfensters erscheint während eines Gesprächs das kompakte Fenster. Es bietet Annehmen/Ablehnen, Stumm, Halten, Tastenfeld, Weiterleitung, Rückkehr/Vermittlung und Auflegen. Schließen verbirgt nur das Mini-Fenster. Das native Symbol im Infobereich hält Fonu auch bei geschlossenem Hauptfenster erreichbar und bietet Gesprächsaktionen, „Nicht stören“ und explizites Beenden. Bei fehlendem Infobereich bleibt das Hauptfenster sichtbar. Beim Beenden mit laufendem Gespräch erscheint eine Bestätigung.
+Beim Minimieren oder Verbergen des Hauptfensters erscheint während eines Gesprächs das kompakte Fenster. Es bietet Annehmen/Ablehnen, Stumm, Halten, Tastenfeld, Weiterleitung, Rückkehr/Vermittlung und Auflegen. Schließen verbirgt nur das Mini-Fenster. Das native Symbol im Infobereich hält fonu auch bei geschlossenem Hauptfenster erreichbar und bietet Gesprächsaktionen, „Nicht stören“ und explizites Beenden. Bei fehlendem Infobereich bleibt das Hauptfenster sichtbar. Beim Beenden mit laufendem Gespräch erscheint eine Bestätigung.
 
 „Konto → Fenster & Infobereich“ bietet jetzt einen gespeicherten Modus zum Minimieren direkt in den Infobereich rechts unten. Statussymbole, Tooltips, ein erweitertes Schnellmenü und ein Status-Overlay am sichtbaren Taskleistenbutton ergänzen die vorhandene Integration. Die Einstellung ist standardmäßig aktiv; sie lässt sich zugunsten des normalen Minimierens in die Taskleiste ausschalten. Details stehen in [DESKTOP-BACKGROUND.md](DESKTOP-BACKGROUND.md).
 
@@ -20,13 +20,13 @@ Seit 06.10.2026 nutzt die Mini-Ansicht regulär 320 × 176 logische Pixel Inhalt
 
 ## Anrufliste, Kontakte und Team
 
-Die Anrufliste übernimmt die zentrale Fonu-Historie und enthält ausgehende/eingehende, verpasste, abgelehnte und fehlgeschlagene Gespräche mit Dauer. Oben wechseln die nativen Filter „Alle“ und „Verpasst“ zwischen allen Einträgen und ausschließlich verpassten eingehenden Anrufen; die Rufnummernsuche wirkt zusätzlich auf den gewählten Filter. „Alle“ ist beim Start ausgewählt. Suche, Rückruf und Löschen sind umgesetzt. Der geschützte lokale Zwischenspeicher ist getrennt nach Konto und Firma, auf 500 Einträge begrenzt und verwirft Einträge nach 90 Tagen. Details stehen in [CALL-HISTORY.md](CALL-HISTORY.md).
+Die Anrufliste übernimmt die zentrale fonu-Historie und enthält ausgehende/eingehende, verpasste, abgelehnte und fehlgeschlagene Gespräche mit Dauer. Oben wechseln die nativen Filter „Alle“ und „Verpasst“ zwischen allen Einträgen und ausschließlich verpassten eingehenden Anrufen; die Rufnummernsuche wirkt zusätzlich auf den gewählten Filter. „Alle“ ist beim Start ausgewählt. Suche, Rückruf und Löschen sind umgesetzt. Der geschützte lokale Zwischenspeicher ist getrennt nach Konto und Firma, auf 500 Einträge begrenzt und verwirft Einträge nach 90 Tagen. Details stehen in [CALL-HISTORY.md](CALL-HISTORY.md).
 
 Windows-Kontakte werden nach bewusster Auswahl schreibgeschützt geladen; alternativ können vCard-Dateien geöffnet werden. Nur validierte Rufnummern sind wählbar. Die Anzeige unterstützt Suche und mehrere Rufnummern je Kontakt. Die App schreibt keine Systemkontakte.
 
 Unter „Kontakte“ trennen die nativen Reiter „Kontaktliste“ und „Kontaktquellen“ die tägliche Nutzung von der Einrichtung. Die Kontaktliste startet mit Suche und Kontaktzeilen; Anrufen und Favoriten bleiben direkt erreichbar. „Kontaktquellen“ enthält die Outlook-Kachel, Windows-Kontakte laden, die Windows-Zugriffsverwaltung und vCard öffnen. Beim Reiterwechsel bleiben Kontakte und Suchtext erhalten; der Wechsel selbst startet keine Anmeldung, lädt keine neuen Kontakte und ändert keine Berechtigungen.
 
-Zusätzlich ist die Microsoft-Anmeldung mit lesendem Outlook-Kontaktzugriff eingebaut. Die gemeinsame Liste zeigt Windows-, vCard- und Outlook-Kontakte; Outlook nutzt einen geschützten Zwischenspeicher pro Fonu-Konto. Eindeutige Kontakte werden in der Gesprächsansicht nach Namen angezeigt. Entra-Konfiguration, Berechtigungen und aktuelle Prüfgrenzen stehen in `MICROSOFT-CONTACTS.md`.
+Zusätzlich ist die Microsoft-Anmeldung mit lesendem Outlook-Kontaktzugriff eingebaut. Die gemeinsame Liste zeigt Windows-, vCard- und Outlook-Kontakte; Outlook nutzt einen geschützten Zwischenspeicher pro fonu-Konto. Eindeutige Kontakte werden in der Gesprächsansicht nach Namen angezeigt. Entra-Konfiguration, Berechtigungen und aktuelle Prüfgrenzen stehen in `MICROSOFT-CONTACTS.md`.
 
 Das Team nutzt die macOS-API: Suche, Details, Nebenstelle anrufen, Favorit anlegen und eigenen Anzeigenamen ändern. Eigene Geräte erscheinen nur beim eigenen Benutzer. Der Fensterkopf bietet den schnellen Anrufprofil-Wechsel; „Anrufprofile & Rufteams“ öffnet die Profilverwaltung mit eigenen Geräteauswahlen, Anlegen/Bearbeiten/Löschen und dem dynamischen Profil Standard. Details stehen in [DEVICE-PROFILES.md](DEVICE-PROFILES.md). Die zusätzliche Statusansicht bietet Präsenz, Ablauf/automatischen Zeitplan sowie Rufteam-Pause/Fortsetzen. Revisionen verhindern unbemerktes Überschreiben gleichzeitiger Änderungen. Ein lokales „Nicht stören“ bleibt zusätzlich zur Firmenverfügbarkeit wirksam. Fehlende Backend-Endpunkte werden als Fehler angezeigt; es gibt keine vorgetäuschten Teamdaten im regulären Build.
 
@@ -42,4 +42,4 @@ Debug/x64-Build, AccountFlow.Tests, PhoneData.Tests, DesktopData.Tests und nativ
 
 Die gesondert gebaute Designvorschau ist ausdrücklich als solche beschriftet und verbindet sich nicht mit einem Konto oder SIP. Ihr isolierter Speicher-/PCM-Test entfernt seine synthetischen Dateien anschließend. Der reguläre Build zeigt diese Vorschauaktionen nicht.
 
-Live-Team-/Verfügbarkeits-API, echter Fonu-Anruf mit Audio, Hardwarewechsel, Netzverlust/Ruhezustand, unterschiedliche DPI und Barrierefreiheit benötigen noch Abnahme. Systemkontakte-Zugriff muss insbesondere im signierten MSIX geprüft werden. Dies ist Funktionsangleichung, noch keine bestätigte vollständige Mac-Parität oder Store-Freigabe.
+Live-Team-/Verfügbarkeits-API, echter fonu-Anruf mit Audio, Hardwarewechsel, Netzverlust/Ruhezustand, unterschiedliche DPI und Barrierefreiheit benötigen noch Abnahme. Systemkontakte-Zugriff muss insbesondere im signierten MSIX geprüft werden. Dies ist Funktionsangleichung, noch keine bestätigte vollständige Mac-Parität oder Store-Freigabe.

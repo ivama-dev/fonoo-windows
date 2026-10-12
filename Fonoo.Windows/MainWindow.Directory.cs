@@ -85,8 +85,8 @@ public sealed partial class MainWindow
         HistoryEmpty.Text = missedOnly
             ? query.Length == 0 ? "Keine verpassten Anrufe." : "Keine passenden verpassten Anrufe."
             : history.Count == 0 ? historyRevision is not null
-                ? "Noch keine Anrufe in den letzten 90 Tagen. Deine Gespräche auf allen Fonu-Geräten erscheinen hier."
-                : "Noch keine Anrufe. Deine Gespräche erscheinen hier nach dem Abgleich mit deinem Fonu-Konto."
+                ? "Noch keine Anrufe in den letzten 90 Tagen. Deine Gespräche auf allen fonu-Geräten erscheinen hier."
+                : "Noch keine Anrufe. Deine Gespräche erscheinen hier nach dem Abgleich mit deinem fonu-Konto."
                 : "Keine passenden Anrufe.";
         ClearHistoryButton.IsEnabled = (historyStore is not null || historyRevision is not null) && history.Count > 0;
         HistoryRetentionStatus.Text = historyRevision is not null

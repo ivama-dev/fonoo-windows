@@ -1,8 +1,8 @@
 # Copyright and third-party software
 
-Copyright (C) 2026 Fonu contributors.
+Copyright (C) 2026 fonu contributors.
 
-The original Windows client code and accompanying project material in this repository are provided under GNU Affero General Public License version 3 or (at your option) any later version, without warranty. See `LICENSE`. Fonu names and marks do not grant an endorsement or a right to present modified software as an official Fonu release.
+The original Windows client code and accompanying project material in this repository are provided under GNU Affero General Public License version 3 or (at your option) any later version, without warranty. See `LICENSE`. fonu names and marks do not grant an endorsement or a right to present modified software as an official fonu release.
 
 Dependencies retain their own copyrights and licenses; the application's license does not relicense third-party software:
 

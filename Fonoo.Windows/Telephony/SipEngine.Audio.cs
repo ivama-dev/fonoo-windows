@@ -62,7 +62,7 @@ public sealed partial class SipEngine
             if (inputs.Length == 0 || outputs.Length == 0) message = "Kein Mikrofon oder Lautsprecher verfügbar. Bitte ein Gerät verbinden.";
             else if ((preferredInput is not null && !inputs.Any(d => d.Id == preferredInput)) ||
                      (preferredOutput is not null && !outputs.Any(d => d.Id == preferredOutput)))
-                message = "Ein gewähltes Gerät fehlt. Fonu verwendet ein verfügbares Ersatzgerät.";
+                message = "Ein gewähltes Gerät fehlt. fonu verwendet ein verfügbares Ersatzgerät.";
             var volume = ControlledCall?.State == CallState.StreamsRunning && !muted ? ControlledCall.RecordVolume : -120;
             var level = double.IsFinite(volume) ? Math.Clamp((volume + 60) / 60.0, 0, 1) : 0;
             result = new(inputs, outputs, input?.Id, output?.Id, call is not null, muted, level, audioTestUntil != 0, message);
