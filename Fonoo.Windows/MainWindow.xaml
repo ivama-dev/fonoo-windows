@@ -1,11 +1,11 @@
 <Window x:Class="Fonoo.Windows.MainWindow"
  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
- xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Fonoo">
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Fonu">
  <Grid RequestedTheme="Light" Background="{ThemeResource FonooSurface}">
   <NavigationView x:Name="DesktopNavigation" PaneDisplayMode="Left" OpenPaneLength="220" IsBackButtonVisible="Collapsed" IsSettingsVisible="False" IsPaneToggleButtonVisible="True" SelectionChanged="DesktopNavigationChanged">
    <NavigationView.PaneHeader>
-    <StackPanel Orientation="Horizontal" Spacing="3" Margin="16,18,0,24" AutomationProperties.Name="Fonoo">
-     <TextBlock Text="fonoo" FontSize="32" FontWeight="ExtraBold" CharacterSpacing="-45" Foreground="{ThemeResource FonooInk}"/>
+    <StackPanel Orientation="Horizontal" Spacing="3" Margin="16,18,0,24" AutomationProperties.Name="Fonu">
+     <TextBlock Text="fonu" FontSize="32" FontWeight="ExtraBold" CharacterSpacing="-45" Foreground="{ThemeResource FonooInk}"/>
      <Ellipse Width="8" Height="8" Fill="{ThemeResource FonooPurple}" VerticalAlignment="Bottom" Margin="0,0,0,9"/>
     </StackPanel>
    </NavigationView.PaneHeader>
@@ -97,9 +97,9 @@
                         </StackPanel>
 
         <StackPanel x:Name="SignedInPanel" Spacing="18" Visibility="Collapsed">
-         <TextBlock Text="Dein fonoo-Konto" FontSize="30" FontWeight="Bold"/>
+         <TextBlock Text="Dein fonu-Konto" FontSize="30" FontWeight="Bold"/>
          <TextBlock x:Name="AccountEmail" Foreground="{ThemeResource FonooMuted}"/>
-         <TextBlock Text="Firma und Nebenstelle findest du in der Seitenleiste. Fonoo bleibt beim Schließen des Fensters im Infobereich erreichbar. Mit „Fonoo beenden“ schließt du die App vollständig." TextWrapping="Wrap"/>
+         <TextBlock Text="Firma und Nebenstelle findest du in der Seitenleiste. Fonu bleibt beim Schließen des Fensters im Infobereich erreichbar. Mit „Fonu beenden“ schließt du die App vollständig." TextWrapping="Wrap"/>
          <TextBlock x:Name="RememberedStatus" TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}"/><Button x:Name="SetAccountPasswordButton" Content="Passwort festlegen / ändern" Click="SetPasswordClicked" Visibility="Collapsed"/>
          <Button Content="Firma / Nebenstelle wechseln" Click="ChangeCompanyClicked"/>
          <Button Content="Status aktualisieren" Click="RefreshClicked"/>
@@ -109,14 +109,14 @@
          <StackPanel Spacing="12">
           <TextBlock Text="Fenster &amp; Infobereich" FontSize="18" FontWeight="SemiBold"/>
           <ToggleSwitch x:Name="MinimizeToTraySwitch" Header="Beim Minimieren im Infobereich weiterlaufen" OnContent="Aktiv" OffContent="In der Taskleiste minimieren" Toggled="MinimizeToTrayToggled"/>
-          <TextBlock Text="Fonoo bleibt rechts unten erreichbar. Klicke auf das Symbol zum Öffnen oder mit der rechten Maustaste für Schnellaktionen. Bei einem Anruf erscheint das kleine Gesprächsfenster." TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}" FontSize="13"/>
+          <TextBlock Text="Fonu bleibt rechts unten erreichbar. Klicke auf das Symbol zum Öffnen oder mit der rechten Maustaste für Schnellaktionen. Bei einem Anruf erscheint das kleine Gesprächsfenster." TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}" FontSize="13"/>
           <TextBlock x:Name="TrayStatusLabel" Text="Nicht angemeldet" FontWeight="SemiBold" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite"/>
           <StackPanel Orientation="Horizontal" Spacing="8"><Button Content="Schnellmenü öffnen" Click="TrayMenuClicked" ToolTipService.ToolTip="Dasselbe Menü wie am Symbol rechts unten"/><Button Content="In den Hintergrund" Click="HideInTrayClicked"/></StackPanel>
           <TextBlock Text="Grün: verbunden · Grau: offline · Violett: Anruf · Rot: Nicht stören · Orange: gehalten oder stumm" TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}" FontSize="12"/>
-          <TextBlock Text="Falls das Symbol verborgen ist, findest du es unter dem Pfeil rechts unten. Mit „Fonoo beenden“ schließt du die App vollständig." TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}" FontSize="12"/>
+          <TextBlock Text="Falls das Symbol verborgen ist, findest du es unter dem Pfeil rechts unten. Mit „Fonu beenden“ schließt du die App vollständig." TextWrapping="Wrap" Foreground="{ThemeResource FonooMuted}" FontSize="12"/>
          </StackPanel>
         </Border>
-        <Button Content="Fonoo beenden" Click="QuitClicked"/>
+        <Button Content="Fonu beenden" Click="QuitClicked"/>
         <Button x:Name="SignOutButton" Content="Abmelden" Click="SignOutClicked" Visibility="Collapsed"/>
        </StackPanel>
        <Grid x:Name="PhonePanel" Visibility="Collapsed">

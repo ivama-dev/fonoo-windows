@@ -42,7 +42,7 @@ try {
     $manifest = [xml](Read-PackageText $payloadArchive 'AppxManifest.xml')
     if ($manifest.Package.Identity.Name -ne 'Fonoo.fonoo' -or
         $manifest.Package.Identity.Publisher -ne 'CN=650F94F0-5748-40C0-A4DB-FE00BDA46215' -or
-        $manifest.Package.Identity.ProcessorArchitecture -ne 'x64') { throw 'Store package identity does not match Fonoo.' }
+        $manifest.Package.Identity.ProcessorArchitecture -ne 'x64') { throw 'Store package identity does not match Fonu.' }
     if ($manifest.Package.Applications.Application.Executable -ne 'Fonoo.Windows.exe' -or
         $manifest.Package.Applications.Application.EntryPoint -ne 'Windows.FullTrustApplication') { throw 'Expected the regular full-trust desktop entry point.' }
     $deviceFamily = $manifest.Package.Dependencies.TargetDeviceFamily

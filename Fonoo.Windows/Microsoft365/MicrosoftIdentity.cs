@@ -57,7 +57,7 @@ public sealed class MicrosoftIdentity : IMicrosoftIdentity
             .WithRedirectUri("http://localhost")
             .WithParentActivityOrWindow(() => parentWindow)
             .WithLegacyCacheCompatibility(false)
-            .WithBroker(new BrokerOptions(BrokerOptions.OperatingSystems.Windows) { Title = "Fonoo · Outlook-Kontakte" })
+            .WithBroker(new BrokerOptions(BrokerOptions.OperatingSystems.Windows) { Title = "Fonu · Outlook-Kontakte" })
             .Build();
     }
     private async Task InitializeAsync(CancellationToken ct)

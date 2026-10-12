@@ -137,7 +137,7 @@ public sealed partial class MainWindow
                     : scoped ? PhonePresenceDisplay.Unknown : null);
             }
         TeamPresenceStatus.Text = current is null ? "Telefonstatus unbekannt · keine aktuelle Rückmeldung"
-            : "Telefonstatus live · Anrufe über Fonoo";
+            : "Telefonstatus live · Anrufe über Fonu";
         if (TeamList.SelectedItem is TeamListItem selected)
             TeamDetailPresence.Text = selected.Phone.Text + (selected.Phone.Detail.Length == 0 ? "" : " · " + selected.Phone.Detail);
     }

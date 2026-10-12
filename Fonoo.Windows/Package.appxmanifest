@@ -5,7 +5,7 @@
          IgnorableNamespaces="uap rescap">
   <Identity Name="Fonoo.fonoo" Publisher="CN=650F94F0-5748-40C0-A4DB-FE00BDA46215" Version="0.1.0.0" />
   <Properties>
-    <DisplayName>fonoo</DisplayName>
+    <DisplayName>fonu</DisplayName>
     <PublisherDisplayName>Fonoo</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -15,7 +15,7 @@
   <Resources><Resource Language="de-DE" /></Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="$targetentrypoint$">
-      <uap:VisualElements DisplayName="fonoo" Description="Fonoo – Just call."
+      <uap:VisualElements DisplayName="fonu" Description="Fonu – Just call."
           BackgroundColor="transparent" Square150x150Logo="Assets\Square150x150Logo.png"
           Square44x44Logo="Assets\Square44x44Logo.png" />
     </Application>

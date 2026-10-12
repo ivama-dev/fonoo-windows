@@ -24,7 +24,7 @@ public sealed class DeviceSession
             throw new AccountException("Die Geräteanmeldung konnte nicht sicher übernommen werden.");
         return this;
     }
-    public override string ToString() => "Fonoo device session (protected)";
+    public override string ToString() => "Fonu device session (protected)";
 }
 public interface IDeviceSessionStore
 {

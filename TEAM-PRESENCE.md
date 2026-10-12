@@ -10,7 +10,7 @@ The authenticated client posts only `{ "tenant_id": "selected-company" }` to `/v
 - A single busy conversation shows the counterpart only when a number is disclosed. Multiple conversations show a count. Unanswered calls and suppressed numbers show no inferred counterpart.
 - The foreground window refreshes about every three seconds with at most one presence request in flight. A separate one-second timer removes expired data even while HTTP is pending. A monotonic 15-second deadline also bounds lifetime if the local wall clock moves backwards.
 - Backgrounding, minimizing, hiding, logout, shutdown and account/company transitions cancel pending reads and clear displayed status/peers. Late replies are rejected by the lifetime, account, company and session generation. Older `observed_at` cannot roll back an accepted snapshot or resurrect it after expiry.
-- Unavailable collector, authorization failure, malformed response, timeout and network failure mean Unknown. This status describes Fonoo calls only; neither SIP registration nor calls outside Fonoo establish personal availability.
+- Unavailable collector, authorization failure, malformed response, timeout and network failure mean Unknown. This status describes Fonu calls only; neither SIP registration nor calls outside Fonu establish personal availability.
 
 ## Identities and contact resolution
 

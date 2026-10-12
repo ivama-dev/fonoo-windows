@@ -111,7 +111,7 @@ public sealed partial class MainWindow
                 profileBusy = false;
                 DeviceProfile? editing = null; var isNew = false;
                 var form = new StackPanel { Spacing = 16, MinWidth = 350, MaxWidth = 500 };
-                form.Children.Add(ProfileText("Wähle, auf welchen Geräten eingehende Anrufe klingeln. Dein Profil gilt auf allen Fonoo-Geräten dieser Firma."));
+                form.Children.Add(ProfileText("Wähle, auf welchen Geräten eingehende Anrufe klingeln. Dein Profil gilt auf allen Fonu-Geräten dieser Firma."));
                 if (current.ProfilesAvailable != true) form.Children.Add(ProfileText("Der Telefonieserver hat die Profilsteuerung noch nicht bestätigt."));
                 var feedback = ProfileText("");
                 var dialog = ProfileDialog("Deine Anrufprofile", form); dialog.CloseButtonText = "Fertig";
@@ -119,7 +119,7 @@ public sealed partial class MainWindow
                 void FillRows()
                 {
                     form.Children.Clear();
-                    form.Children.Add(ProfileText("Wähle, auf welchen Geräten eingehende Anrufe klingeln. Dein Profil gilt auf allen Fonoo-Geräten dieser Firma."));
+                    form.Children.Add(ProfileText("Wähle, auf welchen Geräten eingehende Anrufe klingeln. Dein Profil gilt auf allen Fonu-Geräten dieser Firma."));
                     if (current.ProfilesAvailable != true) form.Children.Add(ProfileText("Der Telefonieserver hat die Profilsteuerung noch nicht bestätigt."));
                     foreach (var profile in current.Settings.Profiles)
                     {
@@ -212,7 +212,7 @@ public sealed partial class MainWindow
             finally { profileBusy = false; dialog.IsPrimaryButtonEnabled = dialog.IsSecondaryButtonEnabled = true; ((ScrollViewer)dialog.Content).IsEnabled = true; RenderProfileButton(); deferral.Complete(); }
         };
         if (await dialog.ShowAsync() != ContentDialogResult.Secondary || !ProfileContextCurrent(context)) return;
-        var confirm = NewDialog("Profil „" + profile.Name + "“ löschen?", "Wenn dieses Profil aktiv ist, wechselt Fonoo auf Standard mit allen eigenen Geräten.", "Löschen");
+        var confirm = NewDialog("Profil „" + profile.Name + "“ löschen?", "Wenn dieses Profil aktiv ist, wechselt Fonu auf Standard mit allen eigenen Geräten.", "Löschen");
         confirm.PrimaryButtonClick += async (_, args) =>
         {
             var deferral = args.GetDeferral(); profileBusy = true; confirm.IsPrimaryButtonEnabled = false;

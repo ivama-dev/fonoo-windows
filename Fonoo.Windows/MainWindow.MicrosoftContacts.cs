@@ -61,7 +61,7 @@ public sealed partial class MainWindow
         catch
         {
             if (!closed && accountId == owner && activeTenant == company && !policyRequest.IsCancellationRequested)
-                microsoftMessage = "Die Firmenfreigabe konnte nicht geladen werden. Bitte aktualisiere dein Fonoo-Konto.";
+                microsoftMessage = "Die Firmenfreigabe konnte nicht geladen werden. Bitte aktualisiere dein Fonu-Konto.";
             UpdateMicrosoftContactsUi(); return;
         }
         finally { if (ReferenceEquals(microsoftPolicyOperation, policyRequest)) microsoftPolicyOperation = null; UpdateMicrosoftContactsUi(); }
@@ -120,7 +120,7 @@ public sealed partial class MainWindow
         var saved = microsoftContacts?.Snapshot;
         OutlookAccount.Text = saved?.Username ?? "Microsoft 365 deiner Firma";
         OutlookStatus.Text = microsoftMessage.Length > 0 ? microsoftMessage : microsoftOperation is not null ? "Outlook-Kontakte werden geladen …" :
-            !microsoftOptions.Configured ? "Die Microsoft-Verbindung ist noch nicht freigeschaltet." : !previewMode && !account.SignedIn ? "Melde dich zuerst bei Fonoo an." : !previewMode && activeTenant.Length == 0 ? "Wähle zuerst deine Firma in Fonoo aus." : microsoftPolicyOperation is not null ? "Die Microsoft-Verbindung deiner Firma wird geprüft …" : saved is null ? "Verbinde dein Firmenkonto, um deine Outlook-Kontakte in Fonoo zu verwenden." :
+            !microsoftOptions.Configured ? "Die Microsoft-Verbindung ist noch nicht freigeschaltet." : !previewMode && !account.SignedIn ? "Melde dich zuerst bei Fonu an." : !previewMode && activeTenant.Length == 0 ? "Wähle zuerst deine Firma in Fonu aus." : microsoftPolicyOperation is not null ? "Die Microsoft-Verbindung deiner Firma wird geprüft …" : saved is null ? "Verbinde dein Firmenkonto, um deine Outlook-Kontakte in Fonu zu verwenden." :
             saved.SyncedAt is { } time ? $"{saved.Contacts.Length} Rufnummern · Stand {time.ToLocalTime():dd.MM. HH:mm} · auf diesem PC gespeichert" : "Bitte melde dich erneut bei Microsoft an.";
         var canAct = microsoftOptions.Configured && account.SignedIn && microsoftOwner == accountId && microsoftCompany == activeTenant && microsoftContacts is not null && microsoftOperation is null && microsoftPolicyOperation is null && !previewMode;
         ConnectOutlookButton.IsEnabled = canAct && !snapshot.InCall;
@@ -157,7 +157,7 @@ public sealed partial class MainWindow
         if (!next.ValidFor(company, microsoftOptions.ClientId) || next.Revision != microsoftPolicy?.Revision || next.MicrosoftTenantId != microsoftPolicy?.MicrosoftTenantId)
         {
             await ForgetMicrosoftContactsAsync();
-            microsoftMessage = "Die Firmenverbindung wurde geändert oder getrennt. Bitte aktualisiere dein Fonoo-Konto.";
+            microsoftMessage = "Die Firmenverbindung wurde geändert oder getrennt. Bitte aktualisiere dein Fonu-Konto.";
             UpdateMicrosoftContactsUi(); throw new OperationCanceledException(ct);
         }
     }
@@ -178,7 +178,7 @@ public sealed partial class MainWindow
         outlookContacts = []; RenderContacts(); UpdateMicrosoftContactsUi(); RefreshPeerDisplay();
         if (current is null) return;
         try { await current.DisconnectAsync(); }
-        catch { if (!closed) ShowNotice("Die Microsoft-Verbindung wurde getrennt. Die lokale Speicherung konnte nicht vollständig entfernt werden; bitte Fonoo neu starten.", InfoBarSeverity.Warning); }
+        catch { if (!closed) ShowNotice("Die Microsoft-Verbindung wurde getrennt. Die lokale Speicherung konnte nicht vollständig entfernt werden; bitte Fonu neu starten.", InfoBarSeverity.Warning); }
         finally { current.Dispose(); }
     }
     private string ContactName(string number)

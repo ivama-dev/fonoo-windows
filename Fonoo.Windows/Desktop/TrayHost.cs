@@ -32,12 +32,12 @@ public sealed class TrayHost : IDisposable
         callback = WindowProc;
         var definition = new WindowClass { Size = (uint)Marshal.SizeOf<WindowClass>(), Procedure = callback, Instance = module, ClassName = className };
         if (RegisterClassEx(ref definition) == 0) throw new InvalidOperationException();
-        window = CreateWindowEx(0, className, "Fonoo notifications", 0, 0, 0, 0, 0, IntPtr.Zero, IntPtr.Zero, module, IntPtr.Zero);
+        window = CreateWindowEx(0, className, "Fonu notifications", 0, 0, 0, 0, 0, IntPtr.Zero, IntPtr.Zero, module, IntPtr.Zero);
         icon = LoadImage(IntPtr.Zero, iconPath, 1, 32, 32, 0x10);
         if (window == IntPtr.Zero || icon == IntPtr.Zero) { Dispose(); throw new InvalidOperationException(); }
         try { statusIcons = new(icon, 32); taskbarStatus = new(mainWindow); } catch { /* Keep the original app icon if status badges cannot be allocated. */ }
         data = new NotifyIcon { Size = (uint)Marshal.SizeOf<NotifyIcon>(), Window = window, Id = 1, Flags = 1 | 2 | 4 | 0x20 | 0x80,
-            CallbackMessage = 0x8001, Icon = icon, Tip = "Fonoo", Info = "", InfoTitle = "", Guid = new("8a1c510e-67bc-44ba-b7cd-6c2ad230f667") };
+            CallbackMessage = 0x8001, Icon = icon, Tip = "Fonu", Info = "", InfoTitle = "", Guid = new("8a1c510e-67bc-44ba-b7cd-6c2ad230f667") };
         AddIcon();
     }
     private void AddIcon()
@@ -69,8 +69,8 @@ public sealed class TrayHost : IDisposable
         try
         {
             data.Flags |= 0x10 | 0x40; data.InfoFlags = 1 | 0x10;
-            data.InfoTitle = "Fonoo läuft im Hintergrund";
-            data.Info = "Öffne Fonoo über das Symbol rechts unten, gegebenenfalls unter dem Pfeil. Rechtsklick zeigt Status und Schnellaktionen.";
+            data.InfoTitle = "Fonu läuft im Hintergrund";
+            data.Info = "Öffne Fonu über das Symbol rechts unten, gegebenenfalls unter dem Pfeil. Rechtsklick zeigt Status und Schnellaktionen.";
             ShellNotifyIcon(1, ref data);
         }
         finally { data.Flags = flags; data.Info = ""; data.InfoTitle = ""; data.InfoFlags = 0; }
@@ -104,7 +104,7 @@ public sealed class TrayHost : IDisposable
             if (company.Length > 0) Add(0, company + (extension.Length > 0 ? " · " + extension : ""), false);
             if (profile.Length > 0 && canPhone) Add(0, "Anrufprofil: " + profile, false);
             Separator();
-            Add(1, "Fonoo öffnen");
+            Add(1, "Fonu öffnen");
             Add(9, "Wählen"); Add(13, "Favoriten"); Add(14, "Anrufliste");
             if (state.InCall)
             {
@@ -120,7 +120,7 @@ public sealed class TrayHost : IDisposable
             if (!state.Registered && !state.InCall) Add(17, "Telefonie erneut verbinden", canPhone && !controlsBusy);
             Separator();
             Add(18, "In den Hintergrund");
-            Add(8, "Fonoo beenden");
+            Add(8, "Fonu beenden");
             GetCursorPos(out var point); SetForegroundWindow(owner);
             var selected = TrackPopupMenuEx(menu, 0x100 | 0x2, point.X, point.Y, owner, IntPtr.Zero);
             PostMessage(owner, 0, UIntPtr.Zero, IntPtr.Zero);

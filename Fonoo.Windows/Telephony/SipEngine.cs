@@ -125,7 +125,7 @@ public sealed partial class SipEngine
             payload.RecvFmtp = "useinbandfec=1;stereo=0;sprop-stereo=0;usedtx=0;maxaveragebitrate=40000";
         core.Ring = Path.Combine(AppContext.BaseDirectory, "share", "sounds", "linphone", "rings", "oldphone-mono.wav");
         core.IncTimeout = 45;
-        core.SetUserAgent("Fonoo-Windows", "0.1");
+        core.SetUserAgent("Fonu-Windows", "0.1");
         core.RootCa = roots;
         core.VerifyServerCertificates(true);
         core.VerifyServerCn(true);

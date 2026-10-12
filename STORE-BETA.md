@@ -1,6 +1,6 @@
 # Microsoft Store packaging
 
-The official Fonoo package identity is declared in `Fonoo.Windows/Package.appxmanifest`. Forks must use their own Store identity and signing configuration. The application is x64-only in this revision.
+The official Fonu package identity is declared in `Fonoo.Windows/Package.appxmanifest`. Forks must use their own Store identity and signing configuration. The application is x64-only in this revision.
 
 ```powershell
 ./Build-StoreBeta.ps1 -Restore

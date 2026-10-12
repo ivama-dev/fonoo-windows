@@ -23,11 +23,11 @@ public sealed partial class MainWindow
             {
                 historyRevision = cached.Revision;
                 history.Clear(); history.AddRange(cached.Validate(tenant, accountId));
-                HistorySyncStatus.Text = "Fonoo-Konto · gespeicherter Stand, wird aktualisiert";
+                HistorySyncStatus.Text = "Fonu-Konto · gespeicherter Stand, wird aktualisiert";
                 RenderHistory();
             }
         }
-        catch { HistorySyncStatus.Text = "Fonoo-Konto · gespeicherter Stand konnte nicht gelesen werden"; }
+        catch { HistorySyncStatus.Text = "Fonu-Konto · gespeicherter Stand konnte nicht gelesen werden"; }
         historyTimer ??= DispatcherQueue.CreateTimer();
         historyTimer.Interval = TimeSpan.FromSeconds(15);
         if (!historyTimer.IsRunning) historyTimer.Start();
@@ -50,8 +50,8 @@ public sealed partial class MainWindow
             if (closed || !ReferenceEquals(lifetime, historyLifetime) || tenant != activeTenant || user != accountId) return;
             if (!ApplyHistoryResponse(response, cache, tenant, user)) return;
             HistorySyncStatus.Text = response.CollectorAvailable
-                ? "Mit deinem Fonoo-Konto synchronisiert · auf allen Geräten"
-                : "Fonoo-Konto · Telefonieserver-Abgleich ausstehend";
+                ? "Mit deinem Fonu-Konto synchronisiert · auf allen Geräten"
+                : "Fonu-Konto · Telefonieserver-Abgleich ausstehend";
             // Leave the current scroll position and row containers intact when unchanged.
             if (!response.NotModified) RenderHistory();
         }
@@ -65,7 +65,7 @@ public sealed partial class MainWindow
             if (ReferenceEquals(lifetime, historyLifetime) && !closed)
                 HistorySyncStatus.Text = historyRevision is null
                     ? "Kontosynchronisierung noch nicht erreichbar · bisherige Liste auf diesem PC"
-                    : "Fonoo-Konto · gespeicherter Stand, Verbindung wird wiederholt";
+                    : "Fonu-Konto · gespeicherter Stand, Verbindung wird wiederholt";
         }
         finally
         {
@@ -79,7 +79,7 @@ public sealed partial class MainWindow
                         history.Clear(); history.AddRange(pruned.Validate(tenant, user)); RenderHistory();
                     }
                 }
-                catch { HistorySyncStatus.Text = "Fonoo-Konto · gespeicherter Stand konnte nicht aktualisiert werden"; }
+                catch { HistorySyncStatus.Text = "Fonu-Konto · gespeicherter Stand konnte nicht aktualisiert werden"; }
             }
             historySyncing = false;
         }

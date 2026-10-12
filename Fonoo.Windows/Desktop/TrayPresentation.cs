@@ -20,7 +20,7 @@ public sealed record TrayPresentation(TrayStatusKind Kind, string Status, string
             TrayStatusKind.Calling => state.Status,
             _ => string.IsNullOrWhiteSpace(connectionStatus) ? "Nicht verbunden" : connectionStatus
         };
-        var parts = new List<string> { "Fonoo · " + status };
+        var parts = new List<string> { "Fonu · " + status };
         if (state.InCall) parts.Add(string.Join(" · ", new[] { state.Peer, duration }.Where(s => !string.IsNullOrWhiteSpace(s))));
         else
         {
